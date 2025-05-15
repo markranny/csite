@@ -1,0 +1,49 @@
+<!-- dashboard/templates/dashboard/menu_category_delete.html -->
+
+{% extends 'dashboard/base.html' %}
+
+{% block title %}Delete Category - {{ site_settings.site_name }}{% endblock %}
+
+{% block page_title %}Delete Menu Category{% endblock %}
+
+{% block breadcrumb %}
+<span> / </span>
+<a href="{% url 'dashboard:manage_menu' %}">Menu</a>
+<span> / </span>
+<a>Delete Category</a>
+{% endblock %}
+
+{% block content %}
+<div class="content-body">
+    <div class="card">
+        <div class="card-header">
+            <h5>Confirm Deletion</h5>
+        </div>
+        <div class="card-body">
+            <div class="alert alert-danger">
+                <i class="fas fa-exclamation-triangle"></i>
+                Are you sure you want to delete the category <strong>"{{ category.name }}"</strong>?
+            </div>
+            
+            {% if category.items.count > 0 %}
+            <div class="alert alert-warning">
+                <i class="fas fa-exclamation-circle"></i>
+                <strong>Warning:</strong> This category contains {{ category.items.count }} menu items. Deleting this category will orphan these items.
+            </div>
+            {% endif %}
+            
+            <p>This action cannot be undone.</p>
+            
+            <form method="post" class="d-flex justify-content-between">
+                {% csrf_token %}
+                <a href="{% url 'dashboard:manage_menu' %}" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Cancel
+                </a>
+                <button type="submit" class="btn btn-danger">
+                    <i class="fas fa-trash"></i> Delete Category
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

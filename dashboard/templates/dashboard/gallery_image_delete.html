@@ -1,0 +1,47 @@
+<!-- dashboard/templates/dashboard/gallery_image_delete.html -->
+
+{% extends 'dashboard/base.html' %}
+
+{% block title %}Delete Gallery Image - {{ site_settings.site_name }}{% endblock %}
+
+{% block page_title %}Delete Gallery Image{% endblock %}
+
+{% block breadcrumb %}
+<span> / </span>
+<a href="{% url 'dashboard:manage_home' %}">Home Page</a>
+<span> / </span>
+<a>Delete Gallery Image</a>
+{% endblock %}
+
+{% block content %}
+<div class="content-body">
+    <div class="card">
+        <div class="card-header">
+            <h5>Confirm Deletion</h5>
+        </div>
+        <div class="card-body">
+            <div class="alert alert-danger">
+                <i class="fas fa-exclamation-triangle"></i>
+                Are you sure you want to delete the gallery image <strong>"{{ image.title }}"</strong>?
+            </div>
+            <p>This action cannot be undone.</p>
+            
+            <div class="image-preview mb-4 text-center">
+                {% if image.image %}
+                <img src="{{ image.image.url }}" alt="{{ image.title }}" class="img-thumbnail" style="max-height: 300px;">
+                {% endif %}
+            </div>
+            
+            <form method="post" class="d-flex justify-content-between">
+                {% csrf_token %}
+                <a href="{% url 'dashboard:manage_home' %}?tab=gallery" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Cancel
+                </a>
+                <button type="submit" class="btn btn-danger">
+                    <i class="fas fa-trash"></i> Delete Gallery Image
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

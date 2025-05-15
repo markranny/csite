@@ -1,0 +1,269 @@
+<!-- dashboard/templates/dashboard/about.html -->
+
+{% extends 'dashboard/base.html' %}
+
+{% block title %}Manage About Page - {{ site_settings.site_name }}{% endblock %}
+
+{% block page_title %}Manage About Page{% endblock %}
+
+{% block breadcrumb %}
+<span> / </span>
+<a>About</a>
+{% endblock %}
+
+{% block content %}
+<div class="content-body">
+    <ul class="nav nav-tabs mb-4" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="sections-tab" data-bs-toggle="tab" data-bs-target="#sections" type="button" role="tab" aria-controls="sections" aria-selected="true">Sections</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="team-tab" data-bs-toggle="tab" data-bs-target="#team" type="button" role="tab" aria-controls="team" aria-selected="false">Team Members</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="awards-tab" data-bs-toggle="tab" data-bs-target="#awards" type="button" role="tab" aria-controls="awards" aria-selected="false">Awards</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="timeline-tab" data-bs-toggle="tab" data-bs-target="#timeline" type="button" role="tab" aria-controls="timeline" aria-selected="false">Timeline</button>
+        </li>
+    </ul>
+    
+    <div class="tab-content" id="myTabContent">
+        <!-- Sections Tab -->
+        <div class="tab-pane fade show active" id="sections" role="tabpanel" aria-labelledby="sections-tab">
+            <div class="card">
+                <div class="card-header">
+                    <h5>About Page Sections</h5>
+                </div>
+                <div class="card-body">
+                    {% if sections %}
+                    <div class="table-responsive">
+                        <table class="custom-table">
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Section Type</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for section in sections %}
+                                <tr>
+                                    <td>{{ section.title }}</td>
+                                    <td>{{ section.get_section_type_display }}</td>
+                                    <td>
+                                        {% if section.is_active %}
+                                        <span class="badge bg-success">Active</span>
+                                        {% else %}
+                                        <span class="badge bg-danger">Inactive</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="table-actions">
+                                            <a href="{% url 'dashboard:about_section_edit' section.id %}" class="edit">
+                                                <i class="fas fa-edit"></i> Edit
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="empty-state">
+                        <h4>No Sections Found</h4>
+                        <p>There are no about page sections to display.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Team Members Tab -->
+        <div class="tab-pane fade" id="team" role="tabpanel" aria-labelledby="team-tab">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5>Team Members</h5>
+                    <a href="{% url 'dashboard:team_member_add' %}" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Add New Team Member
+                    </a>
+                </div>
+                <div class="card-body">
+                    {% if team_members %}
+                    <div class="table-responsive">
+                        <table class="custom-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Position</th>
+                                    <th>Display Order</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for member in team_members %}
+                                <tr>
+                                    <td>{{ member.name }}</td>
+                                    <td>{{ member.position }}</td>
+                                    <td>{{ member.display_order }}</td>
+                                    <td>
+                                        {% if member.is_active %}
+                                        <span class="badge bg-success">Active</span>
+                                        {% else %}
+                                        <span class="badge bg-danger">Inactive</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="table-actions">
+                                            <a href="{% url 'dashboard:team_member_edit' member.id %}" class="edit">
+                                                <i class="fas fa-edit"></i> Edit
+                                            </a>
+                                            <a href="{% url 'dashboard:team_member_delete' member.id %}" class="delete">
+                                                <i class="fas fa-trash"></i> Delete
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="empty-state">
+                        <i class="fas fa-users fa-4x mb-3"></i>
+                        <h4>No Team Members Found</h4>
+                        <p>You haven't added any team members yet.</p>
+                        <a href="{% url 'dashboard:team_member_add' %}" class="btn btn-primary mt-3">
+                            <i class="fas fa-plus"></i> Add First Team Member
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Awards Tab -->
+        <div class="tab-pane fade" id="awards" role="tabpanel" aria-labelledby="awards-tab">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5>Awards & Recognition</h5>
+                    <a href="{% url 'dashboard:award_add' %}" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Add New Award
+                    </a>
+                </div>
+                <div class="card-body">
+                    {% if awards %}
+                    <div class="table-responsive">
+                        <table class="custom-table">
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Organization</th>
+                                    <th>Year</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for award in awards %}
+                                <tr>
+                                    <td>{{ award.title }}</td>
+                                    <td>{{ award.organization }}</td>
+                                    <td>{{ award.year }}</td>
+                                    <td>
+                                        {% if award.is_active %}
+                                        <span class="badge bg-success">Active</span>
+                                        {% else %}
+                                        <span class="badge bg-danger">Inactive</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="table-actions">
+                                            <a href="{% url 'dashboard:award_edit' award.id %}" class="edit">
+                                                <i class="fas fa-edit"></i> Edit
+                                            </a>
+                                            <a href="{% url 'dashboard:award_delete' award.id %}" class="delete">
+                                                <i class="fas fa-trash"></i> Delete
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="empty-state">
+                        <i class="fas fa-trophy fa-4x mb-3"></i>
+                        <h4>No Awards Found</h4>
+                        <p>You haven't added any awards yet.</p>
+                        <a href="{% url 'dashboard:award_add' %}" class="btn btn-primary mt-3">
+                            <i class="fas fa-plus"></i> Add First Award
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Timeline Tab -->
+        <div class="tab-pane fade" id="timeline" role="tabpanel" aria-labelledby="timeline-tab">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5>Company Timeline</h5>
+                    <a href="{% url 'dashboard:timeline_add' %}" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Add New Event
+                    </a>
+                </div>
+                <div class="card-body">
+                    {% if timeline_events %}
+                    <div class="table-responsive">
+                        <table class="custom-table">
+                            <thead>
+                                <tr>
+                                    <th>Year</th>
+                                    <th>Title</th>
+                                    <th>Description</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for event in timeline_events %}
+                                <tr>
+                                    <td>{{ event.year }}</td>
+                                    <td>{{ event.title }}</td>
+                                    <td>{{ event.description|truncatechars:50 }}</td>
+                                    <td>
+                                        <div class="table-actions">
+                                            <a href="{% url 'dashboard:timeline_edit' event.id %}" class="edit">
+                                                <i class="fas fa-edit"></i> Edit
+                                            </a>
+                                            <a href="{% url 'dashboard:timeline_delete' event.id %}" class="delete">
+                                                <i class="fas fa-trash"></i> Delete
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="empty-state">
+                        <i class="fas fa-history fa-4x mb-3"></i>
+                        <h4>No Timeline Events Found</h4>
+                        <p>You haven't added any timeline events yet.</p>
+                        <a href="{% url 'dashboard:timeline_add' %}" class="btn btn-primary mt-3">
+                            <i class="fas fa-plus"></i> Add First Timeline Event
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,233 @@
+<!-- dashboard/templates/dashboard/home.html -->
+
+{% extends 'dashboard/base.html' %}
+
+{% block title %}Manage Home Page - {{ site_settings.site_name }}{% endblock %}
+
+{% block page_title %}Manage Home Page{% endblock %}
+
+{% block breadcrumb %}
+<span> / </span>
+<a>Home Page</a>
+{% endblock %}
+
+{% block content %}
+<div class="content-body">
+    <ul class="nav nav-tabs mb-4" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="sections-tab" data-bs-toggle="tab" data-bs-target="#sections" type="button" role="tab" aria-controls="sections" aria-selected="true">Page Sections</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="banners-tab" data-bs-toggle="tab" data-bs-target="#banners" type="button" role="tab" aria-controls="banners" aria-selected="false">Banner Slides</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="gallery-tab" data-bs-toggle="tab" data-bs-target="#gallery" type="button" role="tab" aria-controls="gallery" aria-selected="false">Gallery</button>
+        </li>
+    </ul>
+    
+    <div class="tab-content" id="myTabContent">
+        <!-- Sections Tab -->
+        <div class="tab-pane fade show active" id="sections" role="tabpanel" aria-labelledby="sections-tab">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Home Page Sections</h5>
+                </div>
+                <div class="card-body">
+                    {% if sections %}
+                    <div class="table-responsive">
+                        <table class="custom-table">
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Section Type</th>
+                                    <th>Display Order</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for section in sections %}
+                                <tr>
+                                    <td>{{ section.title }}</td>
+                                    <td>{{ section.get_section_type_display }}</td>
+                                    <td>{{ section.display_order }}</td>
+                                    <td>
+                                        {% if section.is_active %}
+                                        <span class="badge bg-success">Active</span>
+                                        {% else %}
+                                        <span class="badge bg-danger">Inactive</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="table-actions">
+                                            <a href="{% url 'dashboard:home_section_edit' section.id %}" class="edit">
+                                                <i class="fas fa-edit"></i> Edit
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="empty-state">
+                        <h4>No Sections Found</h4>
+                        <p>There are no home page sections to display.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Banners Tab -->
+        <div class="tab-pane fade" id="banners" role="tabpanel" aria-labelledby="banners-tab">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5>Banner Slides</h5>
+                    <a href="{% url 'dashboard:home_banner_add' %}" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Add New Banner
+                    </a>
+                </div>
+                <div class="card-body">
+                    {% if banners %}
+                    <div class="table-responsive">
+                        <table class="custom-table">
+                            <thead>
+                                <tr>
+                                    <th>Preview</th>
+                                    <th>Title</th>
+                                    <th>Display Order</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for banner in banners %}
+                                <tr>
+                                    <td>
+                                        {% if banner.image_desktop %}
+                                        <img src="{{ banner.image_desktop.url }}" alt="{{ banner.title }}" class="table-thumbnail" style="max-height: 50px;">
+                                        {% else %}
+                                        <span class="no-image">No Image</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ banner.title }}</td>
+                                    <td>{{ banner.display_order }}</td>
+                                    <td>
+                                        {% if banner.is_active %}
+                                        <span class="badge bg-success">Active</span>
+                                        {% else %}
+                                        <span class="badge bg-danger">Inactive</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="table-actions">
+                                            <a href="{% url 'dashboard:home_banner_edit' banner.id %}" class="edit">
+                                                <i class="fas fa-edit"></i> Edit
+                                            </a>
+                                            <a href="{% url 'dashboard:home_banner_delete' banner.id %}" class="delete">
+                                                <i class="fas fa-trash"></i> Delete
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="empty-state">
+                        <i class="fas fa-images fa-4x mb-3"></i>
+                        <h4>No Banners Found</h4>
+                        <p>You haven't added any banner slides yet.</p>
+                        <a href="{% url 'dashboard:home_banner_add' %}" class="btn btn-primary mt-3">
+                            <i class="fas fa-plus"></i> Add First Banner
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Gallery Tab -->
+        <div class="tab-pane fade" id="gallery" role="tabpanel" aria-labelledby="gallery-tab">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5>Gallery Images</h5>
+                    <a href="{% url 'dashboard:gallery_image_add' %}" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Add New Image
+                    </a>
+                </div>
+                <div class="card-body">
+                    {% if gallery_images %}
+                    <div class="row">
+                        {% for image in gallery_images %}
+                        <div class="col-md-4 col-lg-3 mb-4">
+                            <div class="gallery-item">
+                                <div class="gallery-image">
+                                    <img src="{{ image.image.url }}" alt="{{ image.title }}" class="img-fluid">
+                                    <div class="gallery-overlay">
+                                        <div class="gallery-actions">
+                                            <a href="{% url 'dashboard:gallery_image_edit' image.id %}" class="btn btn-sm btn-light">
+                                                <i class="fas fa-edit"></i> Edit
+                                            </a>
+                                            <a href="{% url 'dashboard:gallery_image_delete' image.id %}" class="btn btn-sm btn-light">
+                                                <i class="fas fa-trash"></i> Delete
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="gallery-info">
+                                    <h6>{{ image.title }}</h6>
+                                    <p>{{ image.get_gallery_type_display }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="empty-state">
+                        <i class="fas fa-images fa-4x mb-3"></i>
+                        <h4>No Gallery Images Found</h4>
+                        <p>You haven't added any gallery images yet.</p>
+                        <a href="{% url 'dashboard:gallery_image_add' %}" class="btn btn-primary mt-3">
+                            <i class="fas fa-plus"></i> Add First Image
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize Bootstrap tabs
+        const triggerTabList = document.querySelectorAll('#myTab button');
+        triggerTabList.forEach(function(triggerEl) {
+            triggerEl.addEventListener('click', function(event) {
+                event.preventDefault();
+                
+                // Remove active class from all tabs
+                triggerTabList.forEach(function(el) {
+                     triggerEl.classList.add('active');
+                triggerEl.setAttribute('aria-selected', 'true');
+                
+                // Hide all tab panes
+                const tabPanes = document.querySelectorAll('.tab-pane');
+                tabPanes.forEach(function(pane) {
+                    pane.classList.remove('show', 'active');
+                });
+                
+                // Show the corresponding tab pane
+                const tabID = triggerEl.getAttribute('data-bs-target').substr(1);
+                document.getElementById(tabID).classList.add('show', 'active');
+            });
+        });
+    });
+</script>
+{% endblock %}

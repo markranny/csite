@@ -1,0 +1,55 @@
+<!-- dashboard/templates/dashboard/store_location_delete.html -->
+
+{% extends 'dashboard/base.html' %}
+
+{% block title %}Delete Location - {{ site_settings.site_name }}{% endblock %}
+
+{% block page_title %}Delete Location{% endblock %}
+
+{% block breadcrumb %}
+<span> / </span>
+<a href="{% url 'dashboard:manage_location' %}">Locations</a>
+<span> / </span>
+<a>Delete Location</a>
+{% endblock %}
+
+{% block content %}
+<div class="content-body">
+    <div class="card">
+        <div class="card-header">
+            <h5>Confirm Deletion</h5>
+        </div>
+        <div class="card-body">
+            <div class="alert alert-danger">
+                <i class="fas fa-exclamation-triangle"></i>
+                Are you sure you want to delete the location <strong>{{ location.name }}</strong>?
+            </div>
+            <p>This action cannot be undone. All information associated with this location will be permanently removed.</p>
+            
+            <div class="location-details mb-4">
+                <h6>Location Details:</h6>
+                <ul>
+                    <li><strong>Name:</strong> {{ location.name }}</li>
+                    <li><strong>Type:</strong> {{ location.get_location_type_display }}</li>
+                    <li><strong>Address:</strong> {{ location.address }}, {{ location.city }}, {{ location.state }}</li>
+                    <li><strong>Status:</strong> 
+                        {% if location.is_active %}Active{% else %}Inactive{% endif %}
+                        {% if location.is_featured %} | Featured{% endif %}
+                        {% if location.is_coming_soon %} | Coming Soon{% endif %}
+                    </li>
+                </ul>
+            </div>
+            
+            <form method="post" class="d-flex justify-content-between">
+                {% csrf_token %}
+                <a href="{% url 'dashboard:manage_location' %}" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Cancel
+                </a>
+                <button type="submit" class="btn btn-danger">
+                    <i class="fas fa-trash"></i> Delete Location
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

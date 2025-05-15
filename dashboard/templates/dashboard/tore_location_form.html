@@ -1,0 +1,299 @@
+<!-- dashboard/templates/dashboard/store_location_form.html -->
+
+{% extends 'dashboard/base.html' %}
+
+{% block title %}{% if location %}Edit{% else %}Add{% endif %} Store Location - {{ site_settings.site_name }}{% endblock %}
+
+{% block page_title %}{% if location %}Edit{% else %}Add{% endif %} Store Location{% endblock %}
+
+{% block breadcrumb %}
+<span> / </span>
+<a href="{% url 'dashboard:manage_location' %}">Locations</a>
+<span> / </span>
+<a>{% if location %}Edit{% else %}Add{% endif %} Location</a>
+{% endblock %}
+
+{% block content %}
+<div class="content-body">
+    <div class="card">
+        <div class="card-header">
+            <h5>{% if location %}Edit{% else %}Add{% endif %} Store Location</h5>
+        </div>
+        <div class="card-body">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <h6 class="section-title">Basic Information</h6>
+                        <div class="mb-3">
+                            <label for="{{ form.name.id_for_label }}" class="form-label">Location Name *</label>
+                            {{ form.name }}
+                            {% if form.name.errors %}
+                            <div class="invalid-feedback d-block">{{ form.name.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="mb-3">
+                            <label for="{{ form.location_type.id_for_label }}" class="form-label">Location Type *</label>
+                            {{ form.location_type }}
+                            {% if form.location_type.errors %}
+                            <div class="invalid-feedback d-block">{{ form.location_type.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="mb-3">
+                            <label for="{{ form.description.id_for_label }}" class="form-label">Description</label>
+                            {{ form.description }}
+                            {% if form.description.errors %}
+                            <div class="invalid-feedback d-block">{{ form.description.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="mb-3">
+                            <label for="{{ form.image.id_for_label }}" class="form-label">Location Image</label>
+                            {% if location and location.image %}
+                            <div class="mb-2">
+                                <img src="{{ location.image.url }}" alt="{{ location.name }}" class="img-thumbnail" style="max-height: 150px;">
+                            </div>
+                            {% endif %}
+                            {{ form.image }}
+                            <small class="form-text text-muted">Upload a high-quality image of the location.</small>
+                            {% if form.image.errors %}
+                            <div class="invalid-feedback d-block">{{ form.image.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <h6 class="section-title">Address</h6>
+                        <div class="mb-3">
+                            <label for="{{ form.address.id_for_label }}" class="form-label">Street Address *</label>
+                            {{ form.address }}
+                            {% if form.address.errors %}
+                            <div class="invalid-feedback d-block">{{ form.address.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="{{ form.city.id_for_label }}" class="form-label">City *</label>
+                                    {{ form.city }}
+                                    {% if form.city.errors %}
+                                    <div class="invalid-feedback d-block">{{ form.city.errors }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="{{ form.state.id_for_label }}" class="form-label">State/Province *</label>
+                                    {{ form.state }}
+                                    {% if form.state.errors %}
+                                    <div class="invalid-feedback d-block">{{ form.state.errors }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="{{ form.zip_code.id_for_label }}" class="form-label">ZIP/Postal Code *</label>
+                            {{ form.zip_code }}
+                            {% if form.zip_code.errors %}
+                            <div class="invalid-feedback d-block">{{ form.zip_code.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="{{ form.latitude.id_for_label }}" class="form-label">Latitude</label>
+                                    {{ form.latitude }}
+                                    {% if form.latitude.errors %}
+                                    <div class="invalid-feedback d-block">{{ form.latitude.errors }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="{{ form.longitude.id_for_label }}" class="form-label">Longitude</label>
+                                    {{ form.longitude }}
+                                    {% if form.longitude.errors %}
+                                    <div class="invalid-feedback d-block">{{ form.longitude.errors }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <h6 class="section-title">Contact Information</h6>
+                        <div class="mb-3">
+                            <label for="{{ form.phone.id_for_label }}" class="form-label">Phone *</label>
+                            {{ form.phone }}
+                            {% if form.phone.errors %}
+                            <div class="invalid-feedback d-block">{{ form.phone.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="mb-3">
+                            <label for="{{ form.email.id_for_label }}" class="form-label">Email</label>
+                            {{ form.email }}
+                            {% if form.email.errors %}
+                            <div class="invalid-feedback d-block">{{ form.email.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <h6 class="section-title">Hours of Operation</h6>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="{{ form.monday_hours.id_for_label }}" class="form-label">Monday Hours</label>
+                                    {{ form.monday_hours }}
+                                    {% if form.monday_hours.errors %}
+                                    <div class="invalid-feedback d-block">{{ form.monday_hours.errors }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="{{ form.tuesday_hours.id_for_label }}" class="form-label">Tuesday Hours</label>
+                                    {{ form.tuesday_hours }}
+                                    {% if form.tuesday_hours.errors %}
+                                    <div class="invalid-feedback d-block">{{ form.tuesday_hours.errors }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="{{ form.wednesday_hours.id_for_label }}" class="form-label">Wednesday Hours</label>
+                                    {{ form.wednesday_hours }}
+                                    {% if form.wednesday_hours.errors %}
+                                    <div class="invalid-feedback d-block">{{ form.wednesday_hours.errors }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="{{ form.thursday_hours.id_for_label }}" class="form-label">Thursday Hours</label>
+                                    {{ form.thursday_hours }}
+                                    {% if form.thursday_hours.errors %}
+                                    <div class="invalid-feedback d-block">{{ form.thursday_hours.errors }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="{{ form.friday_hours.id_for_label }}" class="form-label">Friday Hours</label>
+                                    {{ form.friday_hours }}
+                                    {% if form.friday_hours.errors %}
+                                    <div class="invalid-feedback d-block">{{ form.friday_hours.errors }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="{{ form.saturday_hours.id_for_label }}" class="form-label">Saturday Hours</label>
+                                    {{ form.saturday_hours }}
+                                    {% if form.saturday_hours.errors %}
+                                    <div class="invalid-feedback d-block">{{ form.saturday_hours.errors }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="{{ form.sunday_hours.id_for_label }}" class="form-label">Sunday Hours</label>
+                                    {{ form.sunday_hours }}
+                                    {% if form.sunday_hours.errors %}
+                                    <div class="invalid-feedback d-block">{{ form.sunday_hours.errors }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3 form-check mt-4">
+                                    {{ form.is_24hours }}
+                                    <label for="{{ form.is_24hours.id_for_label }}" class="form-check-label">Open 24 Hours</label>
+                                    {% if form.is_24hours.errors %}
+                                    <div class="invalid-feedback d-block">{{ form.is_24hours.errors }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <h6 class="section-title">Status</h6>
+                        <div class="mb-3 form-check">
+                            {{ form.is_featured }}
+                            <label for="{{ form.is_featured.id_for_label }}" class="form-check-label">Featured Location</label>
+                            {% if form.is_featured.errors %}
+                            <div class="invalid-feedback d-block">{{ form.is_featured.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="mb-3 form-check">
+                            {{ form.is_coming_soon }}
+                            <label for="{{ form.is_coming_soon.id_for_label }}" class="form-check-label">Coming Soon</label>
+                            {% if form.is_coming_soon.errors %}
+                            <div class="invalid-feedback d-block">{{ form.is_coming_soon.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="mb-3 form-check">
+                            {{ form.is_active }}
+                            <label for="{{ form.is_active.id_for_label }}" class="form-check-label">Active</label>
+                            {% if form.is_active.errors %}
+                            <div class="invalid-feedback d-block">{{ form.is_active.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <h6 class="section-title">Additional Information</h6>
+                        <div class="mb-3">
+                            <label for="{{ form.rating.id_for_label }}" class="form-label">Rating (0-5)</label>
+                            {{ form.rating }}
+                            {% if form.rating.errors %}
+                            <div class="invalid-feedback d-block">{{ form.rating.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Save Location
+                    </button>
+                    <a href="{% url 'dashboard:manage_location' %}" class="btn btn-secondary">
+                        <i class="fas fa-times"></i> Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Toggle hours fields when 24 hours is checked
+        const is24HoursCheckbox = document.getElementById('{{ form.is_24hours.id_for_label }}');
+        const hoursFields = document.querySelectorAll('[id$="_hours"]');
+        
+        function toggleHoursFields() {
+            const disabled = is24HoursCheckbox.checked;
+            hoursFields.forEach(field => {
+                field.disabled = disabled;
+                if (disabled) {
+                    field.parentElement.classList.add('text-muted');
+                } else {
+                    field.parentElement.classList.remove('text-muted');
+                }
+            });
+        }
+        
+        if (is24HoursCheckbox) {
+            toggleHoursFields(); // Initial state
+            is24HoursCheckbox.addEventListener('change', toggleHoursFields);
+        }
+    });
+</script>
+{% endblock %}

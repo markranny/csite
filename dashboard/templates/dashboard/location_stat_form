@@ -1,0 +1,65 @@
+    <!-- dashboard/templates/dashboard/location_stat_form.html -->
+
+{% extends 'dashboard/base.html' %}
+
+{% block title %}{% if stat %}Edit{% else %}Add{% endif %} Location Statistic - {{ site_settings.site_name }}{% endblock %}
+
+{% block page_title %}{% if stat %}Edit{% else %}Add{% endif %} Location Statistic{% endblock %}
+
+{% block breadcrumb %}
+<span> / </span>
+<a href="{% url 'dashboard:manage_location' %}">Locations</a>
+<span> / </span>
+<a>{% if stat %}Edit{% else %}Add{% endif %} Statistic</a>
+{% endblock %}
+
+{% block content %}
+<div class="content-body">
+    <div class="card">
+        <div class="card-header">
+            <h5>{% if stat %}Edit{% else %}Add{% endif %} Location Statistic</h5>
+        </div>
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                
+                <div class="mb-3">
+                    <label for="{{ form.label.id_for_label }}" class="form-label">Label *</label>
+                    {{ form.label }}
+                    <small class="form-text text-muted">Example: "Total Stores", "Cities", "Customers Served"</small>
+                    {% if form.label.errors %}
+                    <div class="invalid-feedback d-block">{{ form.label.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="mb-3">
+                    <label for="{{ form.value.id_for_label }}" class="form-label">Value *</label>
+                    {{ form.value }}
+                    <small class="form-text text-muted">Example: "50+", "1.2M", "24 Countries"</small>
+                    {% if form.value.errors %}
+                    <div class="invalid-feedback d-block">{{ form.value.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="mb-3">
+                    <label for="{{ form.display_order.id_for_label }}" class="form-label">Display Order</label>
+                    {{ form.display_order }}
+                    <small class="form-text text-muted">Lower numbers appear first</small>
+                    {% if form.display_order.errors %}
+                    <div class="invalid-feedback d-block">{{ form.display_order.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Save Statistic
+                    </button>
+                    <a href="{% url 'dashboard:manage_location' %}" class="btn btn-secondary">
+                        <i class="fas fa-times"></i> Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

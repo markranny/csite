@@ -1,0 +1,345 @@
+<!-- dashboard/templates/dashboard/menu.html -->
+
+{% extends 'dashboard/base.html' %}
+
+{% block title %}Manage Menu - {{ site_settings.site_name }}{% endblock %}
+
+{% block page_title %}Manage Menu{% endblock %}
+
+{% block breadcrumb %}
+<span> / </span>
+<a>Menu</a>
+{% endblock %}
+
+{% block content %}
+<div class="content-body">
+    <ul class="nav nav-tabs mb-4" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="categories-tab" data-bs-toggle="tab" data-bs-target="#categories" type="button" role="tab" aria-controls="categories" aria-selected="true">Categories</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="items-tab" data-bs-toggle="tab" data-bs-target="#items" type="button" role="tab" aria-controls="items" aria-selected="false">Menu Items</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="featured-tab" data-bs-toggle="tab" data-bs-target="#featured" type="button" role="tab" aria-controls="featured" aria-selected="false">Featured Items</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="offers-tab" data-bs-toggle="tab" data-bs-target="#offers" type="button" role="tab" aria-controls="offers" aria-selected="false">Special Offers</button>
+        </li>
+    </ul>
+    
+    <div class="tab-content" id="myTabContent">
+        <!-- Categories Tab -->
+        <div class="tab-pane fade show active" id="categories" role="tabpanel" aria-labelledby="categories-tab">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5>Menu Categories</h5>
+                    <a href="{% url 'dashboard:menu_category_add' %}" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Add New Category
+                    </a>
+                </div>
+                <div class="card-body">
+                    {% if categories %}
+                    <div class="table-responsive">
+                        <table class="custom-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Description</th>
+                                    <th>Items</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for category in categories %}
+                                <tr>
+                                    <td>{{ category.name }}</td>
+                                    <td>{{ category.description|truncatechars:50 }}</td>
+                                    <td>{{ category.items.count }}</td>
+                                    <td>
+                                        {% if category.is_active %}
+                                        <span class="badge bg-success">Active</span>
+                                        {% else %}
+                                        <span class="badge bg-danger">Inactive</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="table-actions">
+                                            <a href="{% url 'dashboard:menu_category_edit' category.id %}" class="edit">
+                                                <i class="fas fa-edit"></i> Edit
+                                            </a>
+                                            <a href="{% url 'dashboard:menu_category_delete' category.id %}" class="delete">
+                                                <i class="fas fa-trash"></i> Delete
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="empty-state">
+                        <i class="fas fa-th-list fa-4x mb-3"></i>
+                        <h4>No Categories Found</h4>
+                        <p>You haven't added any menu categories yet.</p>
+                        <a href="{% url 'dashboard:menu_category_add' %}" class="btn btn-primary mt-3">
+                            <i class="fas fa-plus"></i> Add First Category
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Menu Items Tab -->
+        <div class="tab-pane fade" id="items" role="tabpanel" aria-labelledby="items-tab">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5>Menu Items</h5>
+                    <a href="{% url 'dashboard:menu_item_add' %}" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Add New Item
+                    </a>
+                </div>
+                <div class="card-body">
+                    {% if menu_items %}
+                    <div class="table-responsive">
+                        <table class="custom-table">
+                            <thead>
+                                <tr>
+                                    <th>Image</th>
+                                    <th>Name</th>
+                                    <th>Category</th>
+                                    <th>Price</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in menu_items %}
+                                <tr>
+                                    <td>
+                                        {% if item.image %}
+                                        <img src="{{ item.image.url }}" alt="{{ item.name }}" class="table-thumbnail" style="max-height: 50px;">
+                                        {% else %}
+                                        <span class="no-image">No Image</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ item.name }}</td>
+                                    <td>{{ item.category.name }}</td>
+                                    <td>₱{{ item.price|floatformat:2 }}</td>
+                                    <td>
+                                        {% if item.is_active %}
+                                        <span class="badge bg-success">Active</span>
+                                        {% else %}
+                                        <span class="badge bg-danger">Inactive</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="table-actions">
+                                            <a href="{% url 'dashboard:menu_item_edit' item.id %}" class="edit">
+                                                <i class="fas fa-edit"></i> Edit
+                                            </a>
+                                            <a href="{% url 'dashboard:menu_item_delete' item.id %}" class="delete">
+                                                <i class="fas fa-trash"></i> Delete
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="empty-state">
+                        <i class="fas fa-utensils fa-4x mb-3"></i>
+                        <h4>No Menu Items Found</h4>
+                        <p>You haven't added any menu items yet.</p>
+                        <a href="{% url 'dashboard:menu_item_add' %}" class="btn btn-primary mt-3">
+                            <i class="fas fa-plus"></i> Add First Item
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Featured Items Tab -->
+        <div class="tab-pane fade" id="featured" role="tabpanel" aria-labelledby="featured-tab">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5>Featured Items</h5>
+                    <a href="{% url 'dashboard:featured_item_add' %}" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Add New Featured Item
+                    </a>
+                </div>
+                <div class="card-body">
+                    {% if featured_items %}
+                    <div class="table-responsive">
+                        <table class="custom-table">
+                            <thead>
+                                <tr>
+                                    <th>Image</th>
+                                    <th>Title</th>
+                                    <th>Price</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in featured_items %}
+                                <tr>
+                                    <td>
+                                        {% if item.image %}
+                                        <img src="{{ item.image.url }}" alt="{{ item.title }}" class="table-thumbnail" style="max-height: 50px;">
+                                        {% else %}
+                                        <span class="no-image">No Image</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ item.title }}</td>
+                                    <td>₱{{ item.price|floatformat:2 }}</td>
+                                    <td>
+                                        {% if item.is_active %}
+                                        <span class="badge bg-success">Active</span>
+                                        {% else %}
+                                        <span class="badge bg-danger">Inactive</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="table-actions">
+                                            <a href="{% url 'dashboard:featured_item_edit' item.id %}" class="edit">
+                                                <i class="fas fa-edit"></i> Edit
+                                            </a>
+                                            <a href="{% url 'dashboard:featured_item_delete' item.id %}" class="delete">
+                                                <i class="fas fa-trash"></i> Delete
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="empty-state">
+                        <i class="fas fa-star fa-4x mb-3"></i>
+                        <h4>No Featured Items Found</h4>
+                        <p>You haven't added any featured items yet.</p>
+                        <a href="{% url 'dashboard:featured_item_add' %}" class="btn btn-primary mt-3">
+                            <i class="fas fa-plus"></i> Add First Featured Item
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Special Offers Tab -->
+        <div class="tab-pane fade" id="offers" role="tabpanel" aria-labelledby="offers-tab">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5>Special Offers</h5>
+                    <a href="{% url 'dashboard:special_offer_add' %}" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Add New Offer
+                    </a>
+                </div>
+                <div class="card-body">
+                    {% if special_offers %}
+                    <div class="table-responsive">
+                        <table class="custom-table">
+                            <thead>
+                                <tr>
+                                    <th>Image</th>
+                                    <th>Title</th>
+                                    <th>Discount</th>
+                                    <th>Expiry Date</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for offer in special_offers %}
+                                <tr>
+                                    <td>
+                                        {% if offer.image %}
+                                        <img src="{{ offer.image.url }}" alt="{{ offer.title }}" class="table-thumbnail" style="max-height: 50px;">
+                                        {% else %}
+                                        <span class="no-image">No Image</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ offer.title }}</td>
+                                    <td>{{ offer.discount_percentage }}%</td>
+                                    <td>{{ offer.expiry_date|date:"M d, Y" }}</td>
+                                    <td>
+                                        {% if offer.is_active %}
+                                        <span class="badge bg-success">Active</span>
+                                        {% else %}
+                                        <span class="badge bg-danger">Inactive</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="table-actions">
+                                            <a href="{% url 'dashboard:special_offer_edit' offer.id %}" class="edit">
+                                                <i class="fas fa-edit"></i> Edit
+                                            </a>
+                                            <a href="{% url 'dashboard:special_offer_delete' offer.id %}" class="delete">
+                                                <i class="fas fa-trash"></i> Delete
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="empty-state">
+                        <i class="fas fa-tags fa-4x mb-3"></i>
+                        <h4>No Special Offers Found</h4>
+                        <p>You haven't added any special offers yet.</p>
+                        <a href="{% url 'dashboard:special_offer_add' %}" class="btn btn-primary mt-3">
+                            <i class="fas fa-plus"></i> Add First Offer
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize Bootstrap tabs
+        const triggerTabList = document.querySelectorAll('#myTab button');
+        triggerTabList.forEach(function(triggerEl) {
+            triggerEl.addEventListener('click', function(event) {
+                event.preventDefault();
+                
+                // Remove active class from all tabs
+                triggerTabList.forEach(function(el) {
+                    el.classList.remove('active');
+                    el.setAttribute('aria-selected', 'false');
+                });
+                
+                // Add active class to clicked tab
+                triggerEl.classList.add('active');
+                triggerEl.setAttribute('aria-selected', 'true');
+                
+                // Hide all tab panes
+                const tabPanes = document.querySelectorAll('.tab-pane');
+                tabPanes.forEach(function(pane) {
+                    pane.classList.remove('show', 'active');
+                });
+                
+                // Show the corresponding tab pane
+                const tabID = triggerEl.getAttribute('data-bs-target').substr(1);
+                document.getElementById(tabID).classList.add('show', 'active');
+            });
+        });
+    });
+</script>
+{% endblock %}

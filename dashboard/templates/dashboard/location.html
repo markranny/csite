@@ -1,0 +1,135 @@
+<!-- dashboard/templates/dashboard/location.html -->
+
+{% extends 'dashboard/base.html' %}
+
+{% block title %}Manage Locations - {{ site_settings.site_name }}{% endblock %}
+
+{% block page_title %}Manage Store Locations{% endblock %}
+
+{% block breadcrumb %}
+<span> / </span>
+<a>Locations</a>
+{% endblock %}
+
+{% block content %}
+<div class="content-body">
+    <div class="action-buttons mb-4">
+        <a href="{% url 'dashboard:store_location_add' %}" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Add New Location
+        </a>
+        <a href="{% url 'dashboard:location_stat_add' %}" class="btn btn-success">
+            <i class="fas fa-chart-bar"></i> Add Location Stat
+        </a>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5>Store Locations</h5>
+        </div>
+        <div class="card-body">
+            {% if locations %}
+            <div class="table-responsive">
+                <table class="custom-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Type</th>
+                            <th>Address</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for location in locations %}
+                        <tr>
+                            <td>{{ location.name }}</td>
+                            <td>{{ location.get_location_type_display }}</td>
+                            <td>{{ location.address }}, {{ location.city }}, {{ location.state }}</td>
+                            <td>
+                                {% if location.is_active %}
+                                <span class="badge bg-success">Active</span>
+                                {% elif location.is_coming_soon %}
+                                <span class="badge bg-warning">Coming Soon</span>
+                                {% else %}
+                                <span class="badge bg-danger">Inactive</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="table-actions">
+                                    <a href="{% url 'dashboard:store_location_edit' location.id %}" class="edit">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </a>
+                                    <a href="{% url 'dashboard:store_location_delete' location.id %}" class="delete">
+                                        <i class="fas fa-trash"></i> Delete
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <i class="fas fa-map-marker-alt fa-4x mb-3"></i>
+                <h4>No Locations Found</h4>
+                <p>You haven't added any store locations yet.</p>
+                <a href="{% url 'dashboard:store_location_add' %}" class="btn btn-primary mt-3">
+                    <i class="fas fa-plus"></i> Add First Location
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h5>Location Statistics</h5>
+        </div>
+        <div class="card-body">
+            {% if stats %}
+            <div class="table-responsive">
+                <table class="custom-table">
+                    <thead>
+                        <tr>
+                            <th>Label</th>
+                            <th>Value</th>
+                            <th>Display Order</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for stat in stats %}
+                        <tr>
+                            <td>{{ stat.label }}</td>
+                            <td>{{ stat.value }}</td>
+                            <td>{{ stat.display_order }}</td>
+                            <td>
+                                <div class="table-actions">
+                                    <a href="{% url 'dashboard:location_stat_edit' stat.id %}" class="edit">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </a>
+                                    <a href="{% url 'dashboard:location_stat_delete' stat.id %}" class="delete">
+                                        <i class="fas fa-trash"></i> Delete
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <i class="fas fa-chart-bar fa-4x mb-3"></i>
+                <h4>No Statistics Found</h4>
+                <p>You haven't added any location statistics yet.</p>
+                <a href="{% url 'dashboard:location_stat_add' %}" class="btn btn-primary mt-3">
+                    <i class="fas fa-plus"></i> Add First Statistic
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

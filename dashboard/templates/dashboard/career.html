@@ -1,0 +1,404 @@
+<!-- dashboard/templates/dashboard/career.html -->
+
+{% extends 'dashboard/base.html' %}
+
+{% block title %}Manage Careers - {{ site_settings.site_name }}{% endblock %}
+
+{% block page_title %}Manage Career Page{% endblock %}
+
+{% block breadcrumb %}
+<span> / </span>
+<a>Careers</a>
+{% endblock %}
+
+{% block content %}
+<div class="content-body">
+    <ul class="nav nav-tabs mb-4" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="sections-tab" data-bs-toggle="tab" data-bs-target="#sections" type="button" role="tab" aria-controls="sections" aria-selected="true">Sections</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="categories-tab" data-bs-toggle="tab" data-bs-target="#categories" type="button" role="tab" aria-controls="categories" aria-selected="false">Job Categories</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="positions-tab" data-bs-toggle="tab" data-bs-target="#positions" type="button" role="tab" aria-controls="positions" aria-selected="false">Job Positions</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="benefits-tab" data-bs-toggle="tab" data-bs-target="#benefits" type="button" role="tab" aria-controls="benefits" aria-selected="false">Benefits</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="testimonials-tab" data-bs-toggle="tab" data-bs-target="#testimonials" type="button" role="tab" aria-controls="testimonials" aria-selected="false">Testimonials</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="process-tab" data-bs-toggle="tab" data-bs-target="#process" type="button" role="tab" aria-controls="process" aria-selected="false">Process</button>
+        </li>
+    </ul>
+    
+    <div class="tab-content" id="myTabContent">
+        <!-- Sections Tab -->
+        <div class="tab-pane fade show active" id="sections" role="tabpanel" aria-labelledby="sections-tab">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Career Page Sections</h5>
+                </div>
+                <div class="card-body">
+                    {% if sections %}
+                    <div class="table-responsive">
+                        <table class="custom-table">
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Section Type</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for section in sections %}
+                                <tr>
+                                    <td>{{ section.title }}</td>
+                                    <td>{{ section.get_section_type_display }}</td>
+                                    <td>
+                                        {% if section.is_active %}
+                                        <span class="badge bg-success">Active</span>
+                                        {% else %}
+                                        <span class="badge bg-danger">Inactive</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="table-actions">
+                                            <a href="{% url 'dashboard:career_section_edit' section.id %}" class="edit">
+                                                <i class="fas fa-edit"></i> Edit
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="empty-state">
+                        <h4>No Sections Found</h4>
+                        <p>There are no career page sections to display.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Job Categories Tab -->
+        <div class="tab-pane fade" id="categories" role="tabpanel" aria-labelledby="categories-tab">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5>Job Categories</h5>
+                    <a href="{% url 'dashboard:job_category_add' %}" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Add New Category
+                    </a>
+                </div>
+                <div class="card-body">
+                    {% if categories %}
+                    <div class="table-responsive">
+                        <table class="custom-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Open Positions</th>
+                                    <th>Display Order</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for category in categories %}
+                                <tr>
+                                    <td>{{ category.name }}</td>
+                                    <td>{{ category.position_count }}</td>
+                                    <td>{{ category.display_order }}</td>
+                                    <td>
+                                        {% if category.is_active %}
+                                        <span class="badge bg-success">Active</span>
+                                        {% else %}
+                                        <span class="badge bg-danger">Inactive</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="table-actions">
+                                            <a href="{% url 'dashboard:job_category_edit' category.id %}" class="edit">
+                                                <i class="fas fa-edit"></i> Edit
+                                            </a>
+                                            <a href="{% url 'dashboard:job_category_delete' category.id %}" class="delete">
+                                                <i class="fas fa-trash"></i> Delete
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="empty-state">
+                        <i class="fas fa-folder fa-4x mb-3"></i>
+                        <h4>No Categories Found</h4>
+                        <p>You haven't added any job categories yet.</p>
+                        <a href="{% url 'dashboard:job_category_add' %}" class="btn btn-primary mt-3">
+                            <i class="fas fa-plus"></i> Add First Category
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Job Positions Tab -->
+        <div class="tab-pane fade" id="positions" role="tabpanel" aria-labelledby="positions-tab">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5>Job Positions</h5>
+                    <a href="{% url 'dashboard:job_position_add' %}" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Add New Position
+                    </a>
+                </div>
+                <div class="card-body">
+                    {% if positions %}
+                    <div class="table-responsive">
+                        <table class="custom-table">
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Category</th>
+                                    <th>Location</th>
+                                    <th>Type</th>
+                                    <th>Tags</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for position in positions %}
+                                <tr>
+                                    <td>{{ position.title }}</td>
+                                    <td>{{ position.category.name }}</td>
+                                    <td>{{ position.location }}</td>
+                                    <td>{{ position.get_employment_type_display }}</td>
+                                    <td>
+                                        {% if position.is_featured %}<span class="badge bg-primary">Featured</span>{% endif %}
+                                        {% if position.is_urgent %}<span class="badge bg-danger">Urgent</span>{% endif %}
+                                    </td>
+                                    <td>
+                                        {% if position.is_active %}
+                                        <span class="badge bg-success">Active</span>
+                                        {% else %}
+                                        <span class="badge bg-danger">Inactive</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="table-actions">
+                                            <a href="{% url 'dashboard:job_position_edit' position.id %}" class="edit">
+                                                <i class="fas fa-edit"></i> Edit
+                                            </a>
+                                            <a href="{% url 'dashboard:job_position_delete' position.id %}" class="delete">
+                                                <i class="fas fa-trash"></i> Delete
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="empty-state">
+                        <i class="fas fa-briefcase fa-4x mb-3"></i>
+                        <h4>No Job Positions Found</h4>
+                        <p>You haven't added any job positions yet.</p>
+                        <a href="{% url 'dashboard:job_position_add' %}" class="btn btn-primary mt-3">
+                            <i class="fas fa-plus"></i> Add First Position
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Benefits Tab -->
+        <div class="tab-pane fade" id="benefits" role="tabpanel" aria-labelledby="benefits-tab">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5>Employee Benefits</h5>
+                    <a href="{% url 'dashboard:benefit_add' %}" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Add New Benefit
+                    </a>
+                </div>
+                <div class="card-body">
+                    {% if benefits %}
+                    <div class="table-responsive">
+                        <table class="custom-table">
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Description</th>
+                                    <th>Icon</th>
+                                    <th>Display Order</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for benefit in benefits %}
+                                <tr>
+                                    <td>{{ benefit.title }}</td>
+                                    <td>{{ benefit.description|truncatechars:50 }}</td>
+                                    <td><i class="{{ benefit.icon }}"></i> {{ benefit.icon }}</td>
+                                    <td>{{ benefit.display_order }}</td>
+                                    <td>
+                                        <div class="table-actions">
+                                            <a href="{% url 'dashboard:benefit_edit' benefit.id %}" class="edit">
+                                                <i class="fas fa-edit"></i> Edit
+                                            </a>
+                                            <a href="{% url 'dashboard:benefit_delete' benefit.id %}" class="delete">
+                                                <i class="fas fa-trash"></i> Delete
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="empty-state">
+                        <i class="fas fa-gift fa-4x mb-3"></i>
+                        <h4>No Benefits Found</h4>
+                        <p>You haven't added any employee benefits yet.</p>
+                        <a href="{% url 'dashboard:benefit_add' %}" class="btn btn-primary mt-3">
+                            <i class="fas fa-plus"></i> Add First Benefit
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Testimonials Tab -->
+        <div class="tab-pane fade" id="testimonials" role="tabpanel" aria-labelledby="testimonials-tab">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5>Employee Testimonials</h5>
+                    <a href="{% url 'dashboard:employee_testimonial_add' %}" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Add New Testimonial
+                    </a>
+                </div>
+                <div class="card-body">
+                    {% if testimonials %}
+                    <div class="table-responsive">
+                        <table class="custom-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Position</th>
+                                    <th>Years at Company</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for testimonial in testimonials %}
+                                <tr>
+                                    <td>{{ testimonial.name }}</td>
+                                    <td>{{ testimonial.position }}</td>
+                                    <td>{{ testimonial.years_at_company }}</td>
+                                    <td>
+                                        {% if testimonial.is_active %}
+                                        <span class="badge bg-success">Active</span>
+                                        {% else %}
+                                        <span class="badge bg-danger">Inactive</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="table-actions">
+                                            <a href="{% url 'dashboard:employee_testimonial_edit' testimonial.id %}" class="edit">
+                                                <i class="fas fa-edit"></i> Edit
+                                            </a>
+                                            <a href="{% url 'dashboard:employee_testimonial_delete' testimonial.id %}" class="delete">
+                                                <i class="fas fa-trash"></i> Delete
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="empty-state">
+                        <i class="fas fa-comment-dots fa-4x mb-3"></i>
+                        <h4>No Testimonials Found</h4>
+                        <p>You haven't added any employee testimonials yet.</p>
+                        <a href="{% url 'dashboard:employee_testimonial_add' %}" class="btn btn-primary mt-3">
+                            <i class="fas fa-plus"></i> Add First Testimonial
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Process Steps Tab -->
+        <div class="tab-pane fade" id="process" role="tabpanel" aria-labelledby="process-tab">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5>Application Process Steps</h5>
+                    <a href="{% url 'dashboard:process_step_add' %}?type=career" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Add New Step
+                    </a>
+                </div>
+                <div class="card-body">
+                    {% if process_steps %}
+                    <div class="table-responsive">
+                        <table class="custom-table">
+                            <thead>
+                                <tr>
+                                    <th>Step</th>
+                                    <th>Title</th>
+                                    <th>Icon</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for step in process_steps %}
+                                <tr>
+                                    <td>{{ step.step_number }}</td>
+                                    <td>{{ step.title }}</td>
+                                    <td><i class="{{ step.icon }}"></i> {{ step.icon }}</td>
+                                    <td>
+                                        <div class="table-actions">
+                                            <a href="{% url 'dashboard:process_step_edit' step.id %}" class="edit">
+                                                <i class="fas fa-edit"></i> Edit
+                                            </a>
+                                            <a href="{% url 'dashboard:process_step_delete' step.id %}" class="delete">
+                                                <i class="fas fa-trash"></i> Delete
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="empty-state">
+                        <i class="fas fa-tasks fa-4x mb-3"></i>
+                        <h4>No Process Steps Found</h4>
+                        <p>You haven't added any application process steps yet.</p>
+                        <a href="{% url 'dashboard:process_step_add' %}?type=career" class="btn btn-primary mt-3">
+                            <i class="fas fa-plus"></i> Add First Step
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

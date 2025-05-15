@@ -1,0 +1,130 @@
+<!-- dashboard/templates/dashboard/home_section_edit.html -->
+
+{% extends 'dashboard/base.html' %}
+
+{% block title %}Edit {{ section.get_section_type_display }} Section - {{ site_settings.site_name }}{% endblock %}
+
+{% block page_title %}Edit {{ section.get_section_type_display }} Section{% endblock %}
+
+{% block breadcrumb %}
+<span> / </span>
+<a href="{% url 'dashboard:manage_home' %}">Home Page</a>
+<span> / </span>
+<a>Edit Section</a>
+{% endblock %}
+
+{% block content %}
+<div class="content-body">
+    <div class="card">
+        <div class="card-header">
+            <h5>Edit {{ section.get_section_type_display }} Section</h5>
+        </div>
+        <div class="card-body">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <h6 class="section-title">Section Information</h6>
+                        <div class="mb-3">
+                            <label for="{{ form.title.id_for_label }}" class="form-label">Title *</label>
+                            {{ form.title }}
+                            {% if form.title.errors %}
+                            <div class="invalid-feedback d-block">{{ form.title.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="mb-3">
+                            <label for="{{ form.subtitle.id_for_label }}" class="form-label">Subtitle</label>
+                            {{ form.subtitle }}
+                            {% if form.subtitle.errors %}
+                            <div class="invalid-feedback d-block">{{ form.subtitle.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="mb-3">
+                            <label for="{{ form.section_type.id_for_label }}" class="form-label">Section Type *</label>
+                            {{ form.section_type }}
+                            {% if form.section_type.errors %}
+                            <div class="invalid-feedback d-block">{{ form.section_type.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="mb-3">
+                            <label for="{{ form.display_order.id_for_label }}" class="form-label">Display Order</label>
+                            {{ form.display_order }}
+                            <small class="form-text text-muted">Lower numbers appear first.</small>
+                            {% if form.display_order.errors %}
+                            <div class="invalid-feedback d-block">{{ form.display_order.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="mb-3 form-check">
+                            {{ form.is_active }}
+                            <label for="{{ form.is_active.id_for_label }}" class="form-check-label">Active</label>
+                            {% if form.is_active.errors %}
+                            <div class="invalid-feedback d-block">{{ form.is_active.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <h6 class="section-title">Section Image</h6>
+                        <div class="mb-3">
+                            <label for="{{ form.image.id_for_label }}" class="form-label">Image</label>
+                            {% if section.image %}
+                            <div class="mb-2">
+                                <img src="{{ section.image.url }}" alt="{{ section.title }}" class="img-thumbnail" style="max-height: 150px;">
+                            </div>
+                            {% endif %}
+                            {{ form.image }}
+                            <small class="form-text text-muted">Optional. Image to display in the section.</small>
+                            {% if form.image.errors %}
+                            <div class="invalid-feedback d-block">{{ form.image.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <h6 class="section-title">Section Content</h6>
+                        <div class="mb-3">
+                            <label for="{{ form.content.id_for_label }}" class="form-label">Content *</label>
+                            {{ form.content }}
+                            {% if form.content.errors %}
+                            <div class="invalid-feedback d-block">{{ form.content.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Save Section
+                    </button>
+                    <a href="{% url 'dashboard:manage_home' %}" class="btn btn-secondary">
+                        <i class="fas fa-times"></i> Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'ckeditor/ckeditor.css' %}">
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'ckeditor/ckeditor.js' %}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize CKEditor if not already done by Django
+        if (typeof CKEDITOR !== 'undefined' && CKEDITOR) {
+            const contentTextarea = document.querySelector('#{{ form.content.id_for_label }}');
+            if (contentTextarea && !contentTextarea.classList.contains('ckeditor-initialized')) {
+                CKEDITOR.replace('{{ form.content.id_for_label }}');
+                contentTextarea.classList.add('ckeditor-initialized');
+            }
+        }
+    });
+</script>
+{% endblock %}

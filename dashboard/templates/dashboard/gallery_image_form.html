@@ -1,0 +1,98 @@
+<!-- dashboard/templates/dashboard/gallery_image_form.html -->
+
+{% extends 'dashboard/base.html' %}
+
+{% block title %}{% if image %}Edit{% else %}Add{% endif %} Gallery Image - {{ site_settings.site_name }}{% endblock %}
+
+{% block page_title %}{% if image %}Edit{% else %}Add{% endif %} Gallery Image{% endblock %}
+
+{% block breadcrumb %}
+<span> / </span>
+<a href="{% url 'dashboard:manage_home' %}">Home Page</a>
+<span> / </span>
+<a>{% if image %}Edit{% else %}Add{% endif %} Gallery Image</a>
+{% endblock %}
+
+{% block content %}
+<div class="content-body">
+    <div class="card">
+        <div class="card-header">
+            <h5>{% if image %}Edit{% else %}Add{% endif %} Gallery Image</h5>
+        </div>
+        <div class="card-body">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <h6 class="section-title">Image Information</h6>
+                        <div class="mb-3">
+                            <label for="{{ form.title.id_for_label }}" class="form-label">Title *</label>
+                            {{ form.title }}
+                            {% if form.title.errors %}
+                            <div class="invalid-feedback d-block">{{ form.title.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="mb-3">
+                            <label for="{{ form.description.id_for_label }}" class="form-label">Description</label>
+                            {{ form.description }}
+                            {% if form.description.errors %}
+                            <div class="invalid-feedback d-block">{{ form.description.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="mb-3">
+                            <label for="{{ form.gallery_type.id_for_label }}" class="form-label">Gallery Type *</label>
+                            {{ form.gallery_type }}
+                            <small class="form-text text-muted">Select the page where this image should appear.</small>
+                            {% if form.gallery_type.errors %}
+                            <div class="invalid-feedback d-block">{{ form.gallery_type.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="mb-3">
+                            <label for="{{ form.display_order.id_for_label }}" class="form-label">Display Order</label>
+                            {{ form.display_order }}
+                            <small class="form-text text-muted">Lower numbers appear first.</small>
+                            {% if form.display_order.errors %}
+                            <div class="invalid-feedback d-block">{{ form.display_order.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="mb-3 form-check">
+                            {{ form.is_active }}
+                            <label for="{{ form.is_active.id_for_label }}" class="form-check-label">Active</label>
+                            {% if form.is_active.errors %}
+                            <div class="invalid-feedback d-block">{{ form.is_active.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <h6 class="section-title">Image</h6>
+                        <div class="mb-3">
+                            <label for="{{ form.image.id_for_label }}" class="form-label">Image *</label>
+                            {% if image and image.image %}
+                            <div class="mb-2">
+                                <img src="{{ image.image.url }}" alt="{{ image.title }}" class="img-thumbnail" style="max-height: 200px;">
+                            </div>
+                            {% endif %}
+                            {{ form.image }}
+                            <small class="form-text text-muted">Recommended size: 800x600 pixels.</small>
+                            {% if form.image.errors %}
+                            <div class="invalid-feedback d-block">{{ form.image.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Save Gallery Image
+                    </button>
+                    <a href="{% url 'dashboard:manage_home' %}?tab=gallery" class="btn btn-secondary">
+                        <i class="fas fa-times"></i> Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

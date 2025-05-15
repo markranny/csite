@@ -1,0 +1,47 @@
+<!-- dashboard/templates/dashboard/home_banner_delete.html -->
+
+{% extends 'dashboard/base.html' %}
+
+{% block title %}Delete Banner - {{ site_settings.site_name }}{% endblock %}
+
+{% block page_title %}Delete Banner{% endblock %}
+
+{% block breadcrumb %}
+<span> / </span>
+<a href="{% url 'dashboard:manage_home' %}">Home Page</a>
+<span> / </span>
+<a>Delete Banner</a>
+{% endblock %}
+
+{% block content %}
+<div class="content-body">
+    <div class="card">
+        <div class="card-header">
+            <h5>Confirm Deletion</h5>
+        </div>
+        <div class="card-body">
+            <div class="alert alert-danger">
+                <i class="fas fa-exclamation-triangle"></i>
+                Are you sure you want to delete the banner <strong>"{{ banner.title }}"</strong>?
+            </div>
+            <p>This action cannot be undone. All information associated with this banner will be permanently removed.</p>
+            
+            <div class="banner-preview mb-4">
+                {% if banner.image_desktop %}
+                <img src="{{ banner.image_desktop.url }}" alt="{{ banner.title }}" class="img-thumbnail" style="max-height: 200px;">
+                {% endif %}
+            </div>
+            
+            <form method="post" class="d-flex justify-content-between">
+                {% csrf_token %}
+                <a href="{% url 'dashboard:manage_home' %}" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Cancel
+                </a>
+                <button type="submit" class="btn btn-danger">
+                    <i class="fas fa-trash"></i> Delete Banner
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

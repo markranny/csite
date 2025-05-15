@@ -1,0 +1,119 @@
+<!-- dashboard/templates/dashboard/home_banner_form.html -->
+
+{% extends 'dashboard/base.html' %}
+
+{% block title %}{% if banner %}Edit{% else %}Add{% endif %} Banner - {{ site_settings.site_name }}{% endblock %}
+
+{% block page_title %}{% if banner %}Edit{% else %}Add{% endif %} Banner{% endblock %}
+
+{% block breadcrumb %}
+<span> / </span>
+<a href="{% url 'dashboard:manage_home' %}">Home Page</a>
+<span> / </span>
+<a>{% if banner %}Edit{% else %}Add{% endif %} Banner</a>
+{% endblock %}
+
+{% block content %}
+<div class="content-body">
+    <div class="card">
+        <div class="card-header">
+            <h5>{% if banner %}Edit{% else %}Add{% endif %} Banner</h5>
+        </div>
+        <div class="card-body">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <h6 class="section-title">Banner Content</h6>
+                        <div class="mb-3">
+                            <label for="{{ form.title.id_for_label }}" class="form-label">Title *</label>
+                            {{ form.title }}
+                            {% if form.title.errors %}
+                            <div class="invalid-feedback d-block">{{ form.title.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="mb-3">
+                            <label for="{{ form.subtitle.id_for_label }}" class="form-label">Subtitle</label>
+                            {{ form.subtitle }}
+                            {% if form.subtitle.errors %}
+                            <div class="invalid-feedback d-block">{{ form.subtitle.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="mb-3">
+                            <label for="{{ form.link_url.id_for_label }}" class="form-label">Link URL</label>
+                            {{ form.link_url }}
+                            <small class="form-text text-muted">Optional. The URL to navigate to when the banner is clicked.</small>
+                            {% if form.link_url.errors %}
+                            <div class="invalid-feedback d-block">{{ form.link_url.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="mb-3">
+                            <label for="{{ form.button_text.id_for_label }}" class="form-label">Button Text</label>
+                            {{ form.button_text }}
+                            <small class="form-text text-muted">Text to display on the button. Leave empty to hide the button.</small>
+                            {% if form.button_text.errors %}
+                            <div class="invalid-feedback d-block">{{ form.button_text.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <h6 class="section-title">Banner Images</h6>
+                        <div class="mb-3">
+                            <label for="{{ form.image_desktop.id_for_label }}" class="form-label">Desktop Image *</label>
+                            {% if banner and banner.image_desktop %}
+                            <div class="mb-2">
+                                <img src="{{ banner.image_desktop.url }}" alt="{{ banner.title }}" class="img-thumbnail" style="max-height: 150px;">
+                            </div>
+                            {% endif %}
+                            {{ form.image_desktop }}
+                            <small class="form-text text-muted">Recommended size: 1920x800 pixels.</small>
+                            {% if form.image_desktop.errors %}
+                            <div class="invalid-feedback d-block">{{ form.image_desktop.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="mb-3">
+                            <label for="{{ form.image_mobile.id_for_label }}" class="form-label">Mobile Image</label>
+                            {% if banner and banner.image_mobile %}
+                            <div class="mb-2">
+                                <img src="{{ banner.image_mobile.url }}" alt="{{ banner.title }}" class="img-thumbnail" style="max-height: 150px;">
+                            </div>
+                            {% endif %}
+                            {{ form.image_mobile }}
+                            <small class="form-text text-muted">Optional. Recommended size: 768x800 pixels.</small>
+                            {% if form.image_mobile.errors %}
+                            <div class="invalid-feedback d-block">{{ form.image_mobile.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="mb-3">
+                            <label for="{{ form.display_order.id_for_label }}" class="form-label">Display Order</label>
+                            {{ form.display_order }}
+                            <small class="form-text text-muted">Lower numbers appear first.</small>
+                            {% if form.display_order.errors %}
+                            <div class="invalid-feedback d-block">{{ form.display_order.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="mb-3 form-check">
+                            {{ form.is_active }}
+                            <label for="{{ form.is_active.id_for_label }}" class="form-check-label">Active</label>
+                            {% if form.is_active.errors %}
+                            <div class="invalid-feedback d-block">{{ form.is_active.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Save Banner
+                    </button>
+                    <a href="{% url 'dashboard:manage_home' %}" class="btn btn-secondary">
+                        <i class="fas fa-times"></i> Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
