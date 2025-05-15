@@ -1,0 +1,659 @@
+{% extends 'bakeshop/base.html' %}
+{% load bakeshop_tags %}
+{% load static %}
+
+{% block title %}Careers - {{ site_settings.site_name }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .career-hero {
+        padding: 150px 0;
+        background-size: cover;
+        background-position: center;
+        position: relative;
+        color: #fff;
+        text-align: center;
+    }
+    
+    .career-hero-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+    }
+    
+    .career-hero-content {
+        position: relative;
+        z-index: 1;
+    }
+    
+    .career-hero h1 {
+        font-family: 'Playfair Display', serif;
+        font-size: 48px;
+        margin-bottom: 20px;
+    }
+    
+    .career-hero p {
+        font-size: 20px;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    
+    .career-section {
+        padding: 80px 0;
+    }
+    
+    .section-title {
+        text-align: center;
+        margin-bottom: 60px;
+    }
+    
+    .section-title h2 {
+        font-family: 'Playfair Display', serif;
+        font-size: 36px;
+        position: relative;
+        padding-bottom: 20px;
+        margin-bottom: 20px;
+    }
+    
+    .section-title h2:after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 3px;
+        background: #8c5e17;
+    }
+    
+    .section-title p {
+        font-size: 18px;
+        color: #666;
+        max-width: 700px;
+        margin: 0 auto;
+    }
+    
+    .intro-content {
+        max-width: 800px;
+        margin: 0 auto;
+        text-align: center;
+    }
+    
+    .culture-section {
+        background-color: #f9f5f0;
+    }
+    
+    .culture-card {
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        padding: 30px;
+        margin-bottom: 30px;
+        height: 100%;
+    }
+    
+    .culture-card h3 {
+        font-family: 'Playfair Display', serif;
+        font-size: 24px;
+        margin-bottom: 15px;
+        color: #8c5e17;
+    }
+    
+    .culture-card p {
+        color: #666;
+    }
+    
+    .benefit-card {
+        text-align: center;
+        padding: 40px 30px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        margin-bottom: 30px;
+        transition: transform 0.3s ease;
+    }
+    
+    .benefit-card:hover {
+        transform: translateY(-10px);
+    }
+    
+    .benefit-icon {
+        width: 80px;
+        height: 80px;
+        background-color: #f1e8d8;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+    }
+    
+    .benefit-icon i {
+        font-size: 36px;
+        color: #8c5e17;
+    }
+    
+    .benefit-card h3 {
+        font-family: 'Playfair Display', serif;
+        font-size: 22px;
+        margin-bottom: 15px;
+    }
+    
+    .benefit-card p {
+        color: #666;
+    }
+    
+    .job-filter {
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        padding: 30px;
+        margin-bottom: 30px;
+    }
+    
+    .job-filter h3 {
+        font-size: 20px;
+        margin-bottom: 20px;
+    }
+    
+    .filter-group {
+        margin-bottom: 20px;
+    }
+    
+    .filter-group label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+    
+    .filter-select {
+        width: 100%;
+        padding: 10px 15px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        margin-bottom: 15px;
+    }
+    
+    .search-input {
+        width: 100%;
+        padding: 10px 15px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        margin-bottom: 15px;
+    }
+    
+    .job-card {
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        padding: 25px;
+        margin-bottom: 25px;
+        transition: transform 0.3s ease;
+    }
+    
+    .job-card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .job-title {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 15px;
+    }
+    
+    .job-title h3 {
+        font-size: 22px;
+        margin: 0;
+    }
+    
+    .job-badges {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+    }
+    
+    .job-details {
+        margin-bottom: 20px;
+    }
+    
+    .job-details p {
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+    }
+    
+    .job-details p i {
+        margin-right: 10px;
+        color: #8c5e17;
+        width: 20px;
+        text-align: center;
+    }
+    
+    .job-description {
+        margin-bottom: 20px;
+        color: #666;
+    }
+    
+    .process-section {
+        background-color: #f9f5f0;
+    }
+    
+    .process-step {
+        display: flex;
+        margin-bottom: 50px;
+        position: relative;
+    }
+    
+    .process-step:not(:last-child):after {
+        content: '';
+        position: absolute;
+        left: 25px;
+        top: 70px;
+        height: calc(100% - 50px);
+        width: 2px;
+        background-color: #ddd;
+    }
+    
+    .step-number {
+        width: 50px;
+        height: 50px;
+        background-color: #8c5e17;
+        border-radius: 50%;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        font-weight: 600;
+        margin-right: 20px;
+        flex-shrink: 0;
+    }
+    
+    .step-content {
+        flex: 1;
+    }
+    
+    .step-content h3 {
+        font-size: 20px;
+        margin-bottom: 10px;
+    }
+    
+    .step-content p {
+        color: #666;
+    }
+    
+    .testimonial-section {
+        background-color: #fff;
+    }
+    
+    .testimonial-card {
+        background-color: #f9f5f0;
+        border-radius: 10px;
+        padding: 30px;
+        margin-bottom: 30px;
+    }
+    
+    .testimonial-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+    
+    .testimonial-image {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        overflow: hidden;
+        margin-right: 20px;
+    }
+    
+    .testimonial-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    
+    .testimonial-info h3 {
+        font-size: 18px;
+        margin-bottom: 5px;
+    }
+    
+    .testimonial-info p {
+        color: #8c5e17;
+        font-style: italic;
+    }
+    
+    .testimonial-content {
+        font-style: italic;
+        color: #666;
+        position: relative;
+        padding-left: 20px;
+    }
+    
+    .testimonial-content:before {
+        content: '"';
+        position: absolute;
+        left: 0;
+        top: 0;
+        font-size: 50px;
+        line-height: 1;
+        color: #8c5e17;
+        opacity: 0.2;
+    }
+    
+    .apply-section {
+        text-align: center;
+        background-color: #f9f5f0;
+        padding: 100px 0;
+    }
+    
+    .apply-content {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    
+    .apply-content h2 {
+        font-family: 'Playfair Display', serif;
+        font-size: 36px;
+        margin-bottom: 20px;
+    }
+    
+    .apply-content p {
+        color: #666;
+        margin-bottom: 30px;
+    }
+    
+    .btn-lg {
+        padding: 15px 30px;
+        font-size: 16px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="career-hero" style="background-image: url('{% static 'images/career-bg.jpg' %}');">
+    <div class="career-hero-overlay"></div>
+    <div class="container">
+        <div class="career-hero-content">
+            <h1>Join Our Team</h1>
+            <p>Be part of a passionate team that crafts delicious moments and bakes memorable experiences</p>
+        </div>
+    </div>
+</section>
+
+<!-- Introduction Section -->
+{% if sections.intro %}
+<section class="career-section">
+    <div class="container">
+        <div class="section-title">
+            <h2>{{ sections.intro.title }}</h2>
+        </div>
+        
+        <div class="intro-content">
+            {{ sections.intro.content|safe }}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Company Culture Section -->
+{% if sections.culture %}
+<section class="career-section culture-section">
+    <div class="container">
+        <div class="section-title">
+            <h2>{{ sections.culture.title }}</h2>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-4">
+                <div class="culture-card">
+                    <h3>Passion for Excellence</h3>
+                    <p>We're committed to quality in everything we do, from the ingredients we select to the customer service we provide. We take pride in our work and always aim for the best.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="culture-card">
+                    <h3>Innovation & Creativity</h3>
+                    <p>We encourage creative thinking and fresh ideas. Our bakery is a place where traditional techniques meet innovative approaches to create unique, delightful products.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="culture-card">
+                    <h3>Teamwork & Collaboration</h3>
+                    <p>We believe in working together as a team, supporting each other, and celebrating our collective achievements. Strong relationships are at the heart of our success.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="mt-4">
+            {{ sections.culture.content|safe }}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Benefits Section -->
+<section class="career-section">
+    <div class="container">
+        <div class="section-title">
+            <h2>Employee Benefits</h2>
+            <p>We value our team members and offer a range of benefits to support their well-being and growth</p>
+        </div>
+        
+        <div class="row">
+            {% for benefit in benefits %}
+            <div class="col-md-4">
+                <div class="benefit-card">
+                    <div class="benefit-icon">
+                        <i class="fas {{ benefit.icon }}"></i>
+                    </div>
+                    <h3>{{ benefit.title }}</h3>
+                    <p>{{ benefit.description }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Job Openings Section -->
+<section class="career-section">
+    <div class="container">
+        <div class="section-title">
+            <h2>Current Openings</h2>
+            <p>Explore exciting career opportunities at {{ site_settings.site_name }}</p>
+        </div>
+        
+        <div class="row">
+            <!-- Job Filters -->
+            <div class="col-lg-4">
+                <div class="job-filter">
+                    <h3>Filter Jobs</h3>
+                    <form action="{% url 'bakeshop:job_listings' %}" method="get">
+                        <div class="filter-group">
+                            <label for="category">Category</label>
+                            <select name="category" id="category" class="filter-select">
+                                <option value="">All Categories</option>
+                                {% for category in categories %}
+                                <option value="{{ category.id }}">{{ category.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <label for="keyword">Search</label>
+                            <input type="text" name="keyword" id="keyword" class="search-input" placeholder="Job title, skills, keywords...">
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Featured Jobs -->
+            <div class="col-lg-8">
+                <h3>Featured Positions</h3>
+                
+                {% for category in categories %}
+                {% with positions=category.positions.all|slice:":3" %}
+                {% if positions %}
+                <div class="job-category mb-4">
+                    <h4 class="category-name">{{ category.name }}</h4>
+                    
+                    {% for position in positions %}
+                    {% if position.is_active and position.is_featured %}
+                    <div class="job-card">
+                        <div class="job-title">
+                            <h3>{{ position.title }}</h3>
+                            <div class="job-badges">
+                                {{ position|job_badge }}
+                            </div>
+                        </div>
+                        
+                        <div class="job-details">
+                            <p><i class="fas fa-map-marker-alt"></i> {{ position.location }}</p>
+                            <p><i class="fas fa-briefcase"></i> {{ position.get_employment_type_display }}</p>
+                            {% if position.salary_range %}
+                            <p><i class="fas fa-money-bill-wave"></i> {{ position.salary_range }}</p>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="job-description">
+                            {{ position.description|safe|truncatewords_html:30 }}
+                        </div>
+                        
+                        <a href="{% url 'bakeshop:job_detail' position.id %}" class="btn btn-primary">View Details</a>
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+                {% endif %}
+                {% endwith %}
+                {% endfor %}
+                
+                <div class="text-center mt-4">
+                    <a href="{% url 'bakeshop:job_listings' %}" class="btn btn-primary">View All Positions</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Application Process Section -->
+{% if process_steps %}
+<section class="career-section process-section">
+    <div class="container">
+        <div class="section-title">
+            <h2>Our Hiring Process</h2>
+            <p>What to expect when you apply for a position at {{ site_settings.site_name }}</p>
+        </div>
+        
+        <div class="process-steps">
+            {% for step in process_steps %}
+            <div class="process-step">
+                <div class="step-number">{{ step.step_number }}</div>
+                <div class="step-content">
+                    <h3>{{ step.title }}</h3>
+                    <p>{{ step.description }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Testimonials Section -->
+{% if testimonials %}
+<section class="career-section testimonial-section">
+    <div class="container">
+        <div class="section-title">
+            <h2>What Our Team Says</h2>
+            <p>Hear from the people who make {{ site_settings.site_name }} special</p>
+        </div>
+        
+        <div class="row">
+            {% for testimonial in testimonials %}
+            <div class="col-md-6">
+                <div class="testimonial-card">
+                    <div class="testimonial-header">
+                        <div class="testimonial-image">
+                            <img src="{{ testimonial.image.url }}" alt="{{ testimonial.name }}">
+                        </div>
+                        <div class="testimonial-info">
+                            <h3>{{ testimonial.name }}</h3>
+                            <p>{{ testimonial.position }} | {{ testimonial.years_at_company }} years</p>
+                        </div>
+                    </div>
+                    <div class="testimonial-content">
+                        {{ testimonial.testimonial }}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Career Growth Section -->
+{% if sections.growth %}
+<section class="career-section">
+    <div class="container">
+        <div class="section-title">
+            <h2>{{ sections.growth.title }}</h2>
+        </div>
+        
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="growth-content">
+                    {{ sections.growth.content|safe }}
+                </div>
+            </div>
+            
+            <div class="col-lg-6">
+                {% if gallery_images %}
+                <div class="growth-gallery">
+                    <div class="row">
+                        {% for image in gallery_images %}
+                        <div class="col-md-6 mb-4">
+                            <div class="gallery-item">
+                                <img src="{{ image.image.url }}" alt="{{ image.title }}" class="img-fluid rounded">
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Apply Now Section -->
+<section class="apply-section">
+    <div class="container">
+        <div class="apply-content">
+            <h2>Ready to Join Our Team?</h2>
+            <p>Take the first step towards a rewarding career at {{ site_settings.site_name }}. Browse our open positions and apply today!</p>
+            <a href="{% url 'bakeshop:job_listings' %}" class="btn btn-primary btn-lg">Explore Job Openings</a>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add any interactive elements here if needed
+    });
+</script>
+{% endblock %}

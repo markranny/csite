@@ -1,0 +1,829 @@
+{% extends 'bakeshop/base.html' %}
+{% load bakeshop_tags %}
+{% load static %}
+
+{% block title %}Franchise Opportunities - {{ site_settings.site_name }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .franchise-hero {
+        padding: 150px 0;
+        background-size: cover;
+        background-position: center;
+        position: relative;
+        color: #fff;
+        text-align: center;
+    }
+    
+    .franchise-hero-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+    }
+    
+    .franchise-hero-content {
+        position: relative;
+        z-index: 1;
+    }
+    
+    .franchise-hero h1 {
+        font-family: 'Playfair Display', serif;
+        font-size: 48px;
+        margin-bottom: 20px;
+    }
+    
+    .franchise-hero p {
+        font-size: 20px;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    
+    .franchise-section {
+        padding: 80px 0;
+    }
+    
+    .section-title {
+        text-align: center;
+        margin-bottom: 60px;
+    }
+    
+    .section-title h2 {
+        font-family: 'Playfair Display', serif;
+        font-size: 36px;
+        position: relative;
+        padding-bottom: 20px;
+        margin-bottom: 20px;
+    }
+    
+    .section-title h2:after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 3px;
+        background: #8c5e17;
+    }
+    
+    .section-title p {
+        font-size: 18px;
+        color: #666;
+        max-width: 700px;
+        margin: 0 auto;
+    }
+    
+    .intro-content {
+        max-width: 800px;
+        margin: 0 auto;
+        text-align: center;
+    }
+    
+    .why-section {
+        background-color: #f9f5f0;
+    }
+    
+    .why-item {
+        text-align: center;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        padding: 30px;
+        margin-bottom: 30px;
+        transition: transform 0.3s ease;
+        height: 100%;
+    }
+    
+    .why-item:hover {
+        transform: translateY(-10px);
+    }
+    
+    .why-icon {
+        width: 80px;
+        height: 80px;
+        background-color: #f1e8d8;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+    }
+    
+    .why-icon i {
+        font-size: 36px;
+        color: #8c5e17;
+    }
+    
+    .why-item h3 {
+        font-family: 'Playfair Display', serif;
+        font-size: 22px;
+        margin-bottom: 15px;
+    }
+    
+    .why-item p {
+        color: #666;
+    }
+    
+    .franchise-model {
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        padding: 30px;
+        margin-bottom: 30px;
+        position: relative;
+        transition: transform 0.3s ease;
+        height: 100%;
+    }
+    
+    .franchise-model:hover {
+        transform: translateY(-10px);
+    }
+    
+    .franchise-model.recommended {
+        border: 2px solid #8c5e17;
+    }
+    
+    .recommended-badge {
+        position: absolute;
+        top: -15px;
+        right: 20px;
+        background-color: #8c5e17;
+        color: #fff;
+        padding: 5px 15px;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: 600;
+    }
+    
+    .franchise-model h3 {
+        font-size: 24px;
+        margin-bottom: 15px;
+    }
+    
+    .franchise-price {
+        font-size: 28px;
+        font-weight: 700;
+        color: #8c5e17;
+        margin-bottom: 20px;
+    }
+    
+    .franchise-features {
+        margin-bottom: 25px;
+    }
+    
+    .franchise-features ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    
+    .franchise-features li {
+        margin-bottom: 10px;
+        padding-left: 25px;
+        position: relative;
+    }
+    
+    .franchise-features li:before {
+        content: '\f00c';
+        font-family: 'Font Awesome 5 Free';
+        font-weight: 900;
+        position: absolute;
+        left: 0;
+        top: 2px;
+        color: #8c5e17;
+    }
+    
+    .investment-section {
+        background-color: #f9f5f0;
+    }
+    
+    .investment-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 30px;
+        background-color: #fff;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    }
+    
+    .investment-table th, .investment-table td {
+        padding: 15px;
+        text-align: left;
+        border-bottom: 1px solid #f1e8d8;
+    }
+    
+    .investment-table th {
+        background-color: #8c5e17;
+        color: #fff;
+        font-weight: 600;
+    }
+    
+    .investment-table tr:last-child td {
+        border-bottom: none;
+    }
+    
+    .investment-table tr:hover td {
+        background-color: #f9f5f0;
+    }
+    
+    .process-section {
+        background-color: #fff;
+    }
+    
+    .process-step {
+        display: flex;
+        margin-bottom: 50px;
+        position: relative;
+    }
+    
+    .process-step:not(:last-child):after {
+        content: '';
+        position: absolute;
+        left: 25px;
+        top: 70px;
+        height: calc(100% - 50px);
+        width: 2px;
+        background-color: #ddd;
+    }
+    
+    .step-number {
+        width: 50px;
+        height: 50px;
+        background-color: #8c5e17;
+        border-radius: 50%;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        font-weight: 600;
+        margin-right: 20px;
+        flex-shrink: 0;
+    }
+    
+    .step-content {
+        flex: 1;
+    }
+    
+    .step-content h3 {
+        font-size: 20px;
+        margin-bottom: 10px;
+    }
+    
+    .step-content p {
+        color: #666;
+    }
+    
+    .requirements-section {
+        background-color: #f9f5f0;
+    }
+    
+    .requirements-card {
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        padding: 30px;
+        margin-bottom: 30px;
+    }
+    
+    .requirements-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    
+    .requirements-list li {
+        margin-bottom: 15px;
+        padding-left: 30px;
+        position: relative;
+    }
+    
+    .requirements-list li:before {
+        content: '\f058';
+        font-family: 'Font Awesome 5 Free';
+        font-weight: 900;
+        position: absolute;
+        left: 0;
+        top: 2px;
+        color: #8c5e17;
+        font-size: 20px;
+    }
+    
+    .support-section {
+        background-color: #fff;
+    }
+    
+    .support-card {
+        text-align: center;
+        background-color: #f9f5f0;
+        border-radius: 10px;
+        padding: 30px;
+        margin-bottom: 30px;
+        transition: transform 0.3s ease;
+        height: 100%;
+    }
+    
+    .support-card:hover {
+        transform: translateY(-10px);
+    }
+    
+    .support-icon {
+        width: 80px;
+        height: 80px;
+        background-color: #fff;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+    }
+    
+    .support-icon i {
+        font-size: 36px;
+        color: #8c5e17;
+    }
+    
+    .support-card h3 {
+        font-family: 'Playfair Display', serif;
+        font-size: 22px;
+        margin-bottom: 15px;
+    }
+    
+    .support-card p {
+        color: #666;
+    }
+    
+    .testimonial-section {
+        background-color: #f9f5f0;
+    }
+    
+    .testimonial-card {
+        background-color: #fff;
+        border-radius: 10px;
+        padding: 30px;
+        margin-bottom: 30px;
+    }
+    
+    .testimonial-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+    
+    .testimonial-image {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        overflow: hidden;
+        margin-right: 20px;
+    }
+    
+    .testimonial-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    
+    .testimonial-info h3 {
+        font-size: 18px;
+        margin-bottom: 5px;
+    }
+    
+    .testimonial-info p {
+        color: #8c5e17;
+        font-style: italic;
+    }
+    
+    .testimonial-content {
+        font-style: italic;
+        color: #666;
+        position: relative;
+        padding-left: 20px;
+    }
+    
+    .testimonial-content:before {
+        content: '"';
+        position: absolute;
+        left: 0;
+        top: 0;
+        font-size: 50px;
+        line-height: 1;
+        color: #8c5e17;
+        opacity: 0.2;
+    }
+    
+    .faq-section {
+        background-color: #fff;
+    }
+    
+    .accordion-item {
+        margin-bottom: 15px;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+    
+    .accordion-header {
+        background-color: #fff;
+        padding: 0;
+    }
+    
+    .accordion-button {
+        width: 100%;
+        padding: 20px;
+        background-color: #fff;
+        border: none;
+        text-align: left;
+        font-size: 18px;
+        font-weight: 600;
+        color: #333;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .accordion-button:after {
+        content: '\f067';
+        font-family: 'Font Awesome 5 Free';
+        font-weight: 900;
+        color: #8c5e17;
+    }
+    
+    .accordion-button[aria-expanded="true"]:after {
+        content: '\f068';
+    }
+    
+    .accordion-button:hover, .accordion-button:focus {
+        background-color: #f9f5f0;
+        outline: none;
+    }
+    
+    .accordion-body {
+        padding: 0 20px 20px;
+        color: #666;
+    }
+    
+    .apply-section {
+        text-align: center;
+        background-color: #f9f5f0;
+        padding: 100px 0;
+    }
+    
+    .apply-content {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    
+    .apply-content h2 {
+        font-family: 'Playfair Display', serif;
+        font-size: 36px;
+        margin-bottom: 20px;
+    }
+    
+    .apply-content p {
+        color: #666;
+        margin-bottom: 30px;
+    }
+    
+    .btn-lg {
+        padding: 15px 30px;
+        font-size: 16px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="franchise-hero" style="background-image: url('{% static 'images/franchise-bg.jpg' %}');">
+    <div class="franchise-hero-overlay"></div>
+    <div class="container">
+        <div class="franchise-hero-content">
+            <h1>Franchise Opportunities</h1>
+            <p>Join the {{ site_settings.site_name }} family and build a successful business with our proven bakery concept</p>
+        </div>
+    </div>
+</section>
+
+<!-- Introduction Section -->
+{% if sections.intro %}
+<section class="franchise-section">
+    <div class="container">
+        <div class="section-title">
+            <h2>{{ sections.intro.title }}</h2>
+        </div>
+        
+        <div class="intro-content">
+            {{ sections.intro.content|safe }}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Why Franchise With Us Section -->
+{% if sections.why %}
+<section class="franchise-section why-section">
+    <div class="container">
+        <div class="section-title">
+            <h2>{{ sections.why.title }}</h2>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-4">
+                <div class="why-item">
+                    <div class="why-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <h3>Established Brand</h3>
+                    <p>Join a recognized and respected brand with over 25 years of success in the bakery industry.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="why-item">
+                    <div class="why-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Proven Business Model</h3>
+                    <p>Benefit from our successful business model with consistent profit margins and sustainable growth.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="why-item">
+                    <div class="why-icon">
+                        <i class="fas fa-hands-helping"></i>
+                    </div>
+                    <h3>Comprehensive Support</h3>
+                    <p>Receive ongoing training, marketing assistance, and operational support from our experienced team.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="mt-4">
+            {{ sections.why.content|safe }}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Franchise Models Section -->
+<section class="franchise-section">
+    <div class="container">
+        <div class="section-title">
+            <h2>Our Franchise Models</h2>
+            <p>Choose the franchise option that best fits your investment goals and local market</p>
+        </div>
+        
+        <div class="row">
+            {% for model in models %}
+            <div class="col-md-4">
+                <div class="franchise-model {% if model.is_recommended %}recommended{% endif %}">
+                    {% if model.is_recommended %}
+                    <div class="recommended-badge">Recommended</div>
+                    {% endif %}
+                    
+                    <h3>{{ model.name }}</h3>
+                    <div class="franchise-price">₱{{ model.price|intcomma }}</div>
+                    <p>{{ model.space_required }}</p>
+                    
+                    <div class="franchise-features">
+                        <ul>
+                            {% for feature in model.features.split('\n') %}
+                            <li>{{ feature }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    
+                    <a href="{% url 'bakeshop:franchise_request' %}" class="btn btn-primary w-100">Apply Now</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Investment Breakdown Section -->
+{% if investment_items %}
+<section class="franchise-section investment-section">
+    <div class="container">
+        <div class="section-title">
+            <h2>Investment Breakdown</h2>
+            <p>A detailed breakdown of the investment required for each franchise model</p>
+        </div>
+        
+        <div class="table-responsive">
+            <table class="investment-table">
+                <thead>
+                    <tr>
+                        <th>Component</th>
+                        <th>Express</th>
+                        <th>Standard</th>
+                        <th>Premium</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in investment_items %}
+                    <tr>
+                        <td>{{ item.component }}</td>
+                        <td>₱{{ item.express_cost|intcomma }}</td>
+                        <td>₱{{ item.standard_cost|intcomma }}</td>
+                        <td>₱{{ item.premium_cost|intcomma }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Requirements Section -->
+{% if sections.requirements %}
+<section class="franchise-section requirements-section">
+    <div class="container">
+        <div class="section-title">
+            <h2>{{ sections.requirements.title }}</h2>
+        </div>
+        
+        <div class="requirements-card">
+            {{ sections.requirements.content|safe }}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Application Process Section -->
+{% if process_steps %}
+<section class="franchise-section process-section">
+    <div class="container">
+        <div class="section-title">
+            <h2>Application Process</h2>
+            <p>Our simple step-by-step process to become a {{ site_settings.site_name }} franchisee</p>
+        </div>
+        
+        <div class="process-steps">
+            {% for step in process_steps %}
+            <div class="process-step">
+                <div class="step-number">{{ step.step_number }}</div>
+                <div class="step-content">
+                    <h3>{{ step.title }}</h3>
+                    <p>{{ step.description }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Support & Training Section -->
+{% if sections.support %}
+<section class="franchise-section support-section">
+    <div class="container">
+        <div class="section-title">
+            <h2>{{ sections.support.title }}</h2>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-4">
+                <div class="support-card">
+                    <div class="support-icon">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <h3>Comprehensive Training</h3>
+                    <p>Extensive initial training program for you and your staff, covering all aspects of bakery operations.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="support-card">
+                    <div class="support-icon">
+                        <i class="fas fa-store"></i>
+                    </div>
+                    <h3>Store Setup</h3>
+                    <p>Complete assistance with site selection, store design, equipment sourcing, and grand opening preparation.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="support-card">
+                    <div class="support-icon">
+                        <i class="fas fa-bullhorn"></i>
+                    </div>
+                    <h3>Marketing Support</h3>
+                    <p>Access to proven marketing strategies, promotional materials, and local marketing assistance.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="mt-4">
+            {{ sections.support.content|safe }}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Testimonials Section -->
+{% if testimonials %}
+<section class="franchise-section testimonial-section">
+    <div class="container">
+        <div class="section-title">
+            <h2>Success Stories</h2>
+            <p>Hear from our franchisees about their experience with {{ site_settings.site_name }}</p>
+        </div>
+        
+        <div class="row">
+            {% for testimonial in testimonials %}
+            <div class="col-md-6">
+                <div class="testimonial-card">
+                    <div class="testimonial-header">
+                        <div class="testimonial-image">
+                            <img src="{{ testimonial.image.url }}" alt="{{ testimonial.name }}">
+                        </div>
+                        <div class="testimonial-info">
+                            <h3>{{ testimonial.name }}</h3>
+                            <p>{{ testimonial.location }} | {{ testimonial.years_as_franchisee }} years</p>
+                        </div>
+                    </div>
+                    <div class="testimonial-content">
+                        {{ testimonial.testimonial }}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- FAQ Section -->
+{% if faqs %}
+<section class="franchise-section faq-section">
+    <div class="container">
+        <div class="section-title">
+            <h2>Frequently Asked Questions</h2>
+            <p>Find answers to common questions about our franchise program</p>
+        </div>
+        
+        <div class="accordion" id="franchiseFAQ">
+            {% for faq in faqs %}
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="heading{{ forloop.counter }}">
+                    <button class="accordion-button {% if not forloop.first %}collapsed{% endif %}" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ forloop.counter }}" aria-expanded="{{ forloop.first|yesno:'true,false' }}" aria-controls="collapse{{ forloop.counter }}">
+                        {{ faq.question }}
+                    </button>
+                </h2>
+                <div id="collapse{{ forloop.counter }}" class="accordion-collapse collapse {% if forloop.first %}show{% endif %}" aria-labelledby="heading{{ forloop.counter }}" data-bs-parent="#franchiseFAQ">
+                    <div class="accordion-body">
+                        {{ faq.answer }}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Apply Now Section -->
+<section class="apply-section">
+    <div class="container">
+        <div class="apply-content">
+            <h2>Start Your Own Bakery Business Today</h2>
+            <p>Take the first step towards owning a successful {{ site_settings.site_name }} franchise. Apply now and join our growing family of franchisees.</p>
+            <a href="{% url 'bakeshop:franchise_request' %}" class="btn btn-primary btn-lg">Apply for Franchise</a>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize Bootstrap accordions
+        var accordionButtons = document.querySelectorAll('.accordion-button');
+        
+        accordionButtons.forEach(function(button) {
+            button.addEventListener('click', function() {
+                var isExpanded = this.getAttribute('aria-expanded') === 'true';
+                this.setAttribute('aria-expanded', !isExpanded);
+                
+                var target = document.querySelector(this.getAttribute('data-bs-target'));
+                if (target) {
+                    if (isExpanded) {
+                        target.classList.remove('show');
+                    } else {
+                        target.classList.add('show');
+                    }
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

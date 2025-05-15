@@ -1,0 +1,198 @@
+{% extends 'dashboard/base.html' %}
+
+{% block title %}Dashboard - {{ site_settings.site_name }}{% endblock %}
+
+{% block page_title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="dashboard-stats">
+    <div class="stat-card">
+        <div class="stat-icon primary">
+            <i class="fas fa-store"></i>
+        </div>
+        <div class="stat-info">
+            <h3>Store Locations</h3>
+            <p>{{ stats.locations }}</p>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon success">
+            <i class="fas fa-utensils"></i>
+        </div>
+        <div class="stat-info">
+            <h3>Menu Items</h3>
+            <p>{{ stats.menu_items }}</p>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon warning">
+            <i class="fas fa-briefcase"></i>
+        </div>
+        <div class="stat-info">
+            <h3>Active Jobs</h3>
+            <p>{{ stats.jobs }}</p>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon danger">
+            <i class="fas fa-envelope"></i>
+        </div>
+        <div class="stat-info">
+            <h3>Unread Messages</h3>
+            <p>{{ stats.messages }}</p>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-6">
+        <div class="content-body mb-4">
+            <h3 class="mb-4">Recent Messages</h3>
+            {% if recent_messages %}
+            <table class="custom-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Subject</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for message in recent_messages %}
+                    <tr {% if not message.is_read %}class="table-unread"{% endif %}>
+                        <td>{{ message.name }}</td>
+                        <td>{{ message.subject }}</td>
+                        <td>{{ message.date_submitted|date:"M d, Y" }}</td>
+                        <td>
+                            <div class="table-actions">
+                                <a href="{% url 'dashboard:contact_message_detail' message.id %}" class="view">
+                                    <i class="fas fa-eye"></i> View
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <div class="text-right mt-3">
+                <a href="{% url 'dashboard:contact_messages' %}" class="btn btn-primary">View All Messages</a>
+            </div>
+            {% else %}
+            <p class="text-center">No recent messages.</p>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="col-lg-6">
+        <div class="content-body mb-4">
+            <h3 class="mb-4">Upcoming Special Offers</h3>
+            {% if special_offers %}
+            <table class="custom-table">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Discount</th>
+                        <th>Expiry Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for offer in special_offers %}
+                    <tr>
+                        <td>{{ offer.title }}</td>
+                        <td>{{ offer.discount_percentage }}%</td>
+                        <td>{{ offer.expiry_date|date:"M d, Y" }}</td>
+                        <td>
+                            {% if offer.is_active %}
+                            <span class="badge bg-success">Active</span>
+                            {% else %}
+                            <span class="badge bg-danger">Inactive</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <div class="text-right mt-3">
+                <a href="{% url 'dashboard:manage_menu' %}" class="btn btn-primary">Manage Special Offers</a>
+            </div>
+            {% else %}
+            <p class="text-center">No upcoming special offers.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="content-body">
+    <h3 class="mb-4">Quick Actions</h3>
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <a href="{% url 'dashboard:manage_home' %}" class="quick-action-card">
+                <div class="quick-action-icon primary">
+                    <i class="fas fa-home"></i>
+                </div>
+                <div class="quick-action-content">
+                    <h4>Update Home Page</h4>
+                    <p>Edit banners, featured items, and sections</p>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4 mb-4">
+            <a href="{% url 'dashboard:manage_menu' %}" class="quick-action-card">
+                <div class="quick-action-icon success">
+                    <i class="fas fa-utensils"></i>
+                </div>
+                <div class="quick-action-content">
+                    <h4>Manage Menu</h4>
+                    <p>Add or update menu items and categories</p>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4 mb-4">
+            <a href="{% url 'dashboard:manage_location' %}" class="quick-action-card">
+                <div class="quick-action-icon warning">
+                    <i class="fas fa-map-marker-alt"></i>
+                </div>
+                <div class="quick-action-content">
+                    <h4>Manage Locations</h4>
+                    <p>Add or update store locations</p>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4 mb-4">
+            <a href="{% url 'dashboard:manage_career' %}" class="quick-action-card">
+                <div class="quick-action-icon info">
+                    <i class="fas fa-briefcase"></i>
+                </div>
+                <div class="quick-action-content">
+                    <h4>Manage Careers</h4>
+                    <p>Post job openings and review applications</p>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4 mb-4">
+            <a href="{% url 'dashboard:contact_messages' %}" class="quick-action-card">
+                <div class="quick-action-icon danger">
+                    <i class="fas fa-envelope"></i>
+                </div>
+                <div class="quick-action-content">
+                    <h4>View Messages</h4>
+                    <p>Check and respond to customer inquiries</p>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4 mb-4">
+            <a href="{% url 'dashboard:site_settings' %}" class="quick-action-card">
+                <div class="quick-action-icon secondary">
+                    <i class="fas fa-cog"></i>
+                </div>
+                <div class="quick-action-content">
+                    <h4>Site Settings</h4>
+                    <p>Update global settings and branding</p>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

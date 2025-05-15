@@ -1,0 +1,396 @@
+{% extends 'bakeshop/base.html' %}
+{% load bakeshop_tags %}
+{% load static %}
+
+{% block title %}{{ job.title }} - Careers at {{ site_settings.site_name }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .job-hero {
+        padding: 150px 0;
+        background-size: cover;
+        background-position: center;
+        position: relative;
+        color: #fff;
+        text-align: center;
+    }
+    
+    .job-hero-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+    }
+    
+    .job-hero-content {
+        position: relative;
+        z-index: 1;
+    }
+    
+    .job-hero h1 {
+        font-family: 'Playfair Display', serif;
+        font-size: 48px;
+        margin-bottom: 20px;
+    }
+    
+    .job-hero p {
+        font-size: 20px;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    
+    .job-detail-section {
+        padding: 80px 0;
+    }
+    
+    .job-detail-container {
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        padding: 40px;
+        margin-bottom: 30px;
+    }
+    
+    .job-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid #eee;
+    }
+    
+    .job-title h1 {
+        font-family: 'Playfair Display', serif;
+        font-size: 36px;
+        margin-bottom: 10px;
+    }
+    
+    .job-title p {
+        font-size: 18px;
+        color: #666;
+    }
+    
+    .job-badges {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+    }
+    
+    .job-meta {
+        margin-bottom: 30px;
+    }
+    
+    .job-meta-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    
+    .job-meta-list li {
+        display: flex;
+        align-items: center;
+        font-size: 16px;
+    }
+    
+    .job-meta-list li i {
+        margin-right: 10px;
+        color: #8c5e17;
+        width: 20px;
+        text-align: center;
+    }
+    
+    .job-section {
+        margin-bottom: 30px;
+    }
+    
+    .job-section h2 {
+        font-family: 'Playfair Display', serif;
+        font-size: 24px;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #eee;
+    }
+    
+    .job-section ul {
+        padding-left: 20px;
+    }
+    
+    .job-section ul li {
+        margin-bottom: 10px;
+    }
+    
+    .apply-section {
+        background-color: #f9f5f0;
+        border-radius: 10px;
+        padding: 30px;
+        text-align: center;
+    }
+    
+    .apply-section h2 {
+        font-family: 'Playfair Display', serif;
+        font-size: 24px;
+        margin-bottom: 15px;
+    }
+    
+    .apply-section p {
+        margin-bottom: 20px;
+        color: #666;
+    }
+    
+    .apply-btn {
+        padding: 15px 30px;
+        font-size: 16px;
+    }
+    
+    .sidebar-card {
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        padding: 25px;
+        margin-bottom: 25px;
+    }
+    
+    .sidebar-card h3 {
+        font-family: 'Playfair Display', serif;
+        font-size: 20px;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #eee;
+    }
+    
+    .sidebar-share {
+        display: flex;
+        gap: 10px;
+        margin-top: 15px;
+    }
+    
+    .share-link {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: #f9f5f0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #333;
+        transition: all 0.3s ease;
+    }
+    
+    .share-link:hover {
+        background-color: #8c5e17;
+        color: #fff;
+    }
+    
+    .share-link.facebook:hover {
+        background-color: #3b5998;
+    }
+    
+    .share-link.twitter:hover {
+        background-color: #1da1f2;
+    }
+    
+    .share-link.linkedin:hover {
+        background-color: #0077b5;
+    }
+    
+    .related-jobs h3 {
+        margin-bottom: 20px;
+    }
+    
+    .related-job-item {
+        padding: 15px 0;
+        border-bottom: 1px solid #eee;
+    }
+    
+    .related-job-item:last-child {
+        border-bottom: none;
+    }
+    
+    .related-job-item h4 {
+        font-size: 18px;
+        margin-bottom: 5px;
+    }
+    
+    .related-job-item p {
+        color: #666;
+        margin-bottom: 5px;
+        font-size: 14px;
+    }
+    
+    .related-job-item .view-btn {
+        font-size: 14px;
+        font-weight: 600;
+        color: #8c5e17;
+    }
+    
+    .related-job-item .view-btn i {
+        margin-left: 5px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="job-hero" style="background-image: url('{% static 'images/career-bg.jpg' %}');">
+    <div class="job-hero-overlay"></div>
+    <div class="container">
+        <div class="job-hero-content">
+            <h1>{{ job.title }}</h1>
+            <p>{{ job.location }} | {{ job.get_employment_type_display }}</p>
+        </div>
+    </div>
+</section>
+
+<!-- Job Detail Section -->
+<section class="job-detail-section">
+    <div class="container">
+        <div class="row">
+            <!-- Main Content -->
+            <div class="col-lg-8">
+                <div class="job-detail-container">
+                    <!-- Job Header -->
+                    <div class="job-header">
+                        <div class="job-title">
+                            <h1>{{ job.title }}</h1>
+                            <p>{{ job.category.name }}</p>
+                        </div>
+                        <div class="job-badges">
+                            {{ job|job_badge|safe }}
+                        </div>
+                    </div>
+                    
+                    <!-- Job Meta -->
+                    <div class="job-meta">
+                        <ul class="job-meta-list">
+                            <li><i class="fas fa-map-marker-alt"></i> {{ job.location }}</li>
+                            <li><i class="fas fa-briefcase"></i> {{ job.get_employment_type_display }}</li>
+                            <li><i class="fas fa-calendar-alt"></i> Posted on {{ job.date_posted|date:"F d, Y" }}</li>
+                            {% if job.salary_range %}
+                            <li><i class="fas fa-money-bill-wave"></i> {{ job.salary_range }}</li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                    
+                    <!-- Job Description -->
+                    <div class="job-section">
+                        <h2>Job Description</h2>
+                        <div class="job-description">
+                            {{ job.description|safe }}
+                        </div>
+                    </div>
+                    
+                    <!-- Responsibilities -->
+                    <div class="job-section">
+                        <h2>Responsibilities</h2>
+                        <div class="job-responsibilities">
+                            {{ job.responsibilities|safe }}
+                        </div>
+                    </div>
+                    
+                    <!-- Requirements -->
+                    <div class="job-section">
+                        <h2>Requirements</h2>
+                        <div class="job-requirements">
+                            {{ job.requirements|safe }}
+                        </div>
+                    </div>
+                    
+                    <!-- Benefits -->
+                    {% if job.benefits %}
+                    <div class="job-section">
+                        <h2>Benefits</h2>
+                        <div class="job-benefits">
+                            {{ job.benefits|safe }}
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Apply Now Section -->
+                    <div class="apply-section">
+                        <h2>Interested in This Position?</h2>
+                        <p>If you think you're the right fit for this role, we'd love to hear from you. Apply now and join our team!</p>
+                        <a href="{% url 'bakeshop:job_apply' job.id %}" class="btn btn-primary apply-btn">Apply Now</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Share Job -->
+                <div class="sidebar-card">
+                    <h3>Share This Job</h3>
+                    <p>Know someone who might be interested in this position? Share it with them!</p>
+                    <div class="sidebar-share">
+                        <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}" target="_blank" class="share-link facebook">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri }}&text=Check%20out%20this%20job%20opportunity:" target="_blank" class="share-link twitter">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="https://www.linkedin.com/shareArticle?mini=true&url={{ request.build_absolute_uri }}" target="_blank" class="share-link linkedin">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a href="mailto:?subject=Job Opportunity: {{ job.title }}&body=Check out this job opportunity: {{ request.build_absolute_uri }}" class="share-link">
+                            <i class="fas fa-envelope"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Apply Now -->
+                <div class="sidebar-card">
+                    <h3>Apply for This Job</h3>
+                    <p>Ready to take the next step in your career? Apply now!</p>
+                    <a href="{% url 'bakeshop:job_apply' job.id %}" class="btn btn-primary w-100">Apply Now</a>
+                </div>
+                
+                <!-- Company Overview -->
+                <div class="sidebar-card">
+                    <h3>About Us</h3>
+                    <p>{{ site_settings.site_name }} is a leading bakery known for its high-quality products and exceptional customer service. We're passionate about crafting delicious moments and baking memorable experiences.</p>
+                    <a href="{% url 'bakeshop:about' %}" class="btn btn-outline-primary w-100">Learn More</a>
+                </div>
+                
+                <!-- Related Jobs -->
+                <div class="sidebar-card related-jobs">
+                    <h3>Similar Positions</h3>
+                    {% for related_job in related_jobs %}
+                    <div class="related-job-item">
+                        <h4>{{ related_job.title }}</h4>
+                        <p><i class="fas fa-map-marker-alt"></i> {{ related_job.location }}</p>
+                        <p><i class="fas fa-briefcase"></i> {{ related_job.get_employment_type_display }}</p>
+                        <a href="{% url 'bakeshop:job_detail' related_job.id %}" class="view-btn">View Job <i class="fas fa-chevron-right"></i></a>
+                    </div>
+                    {% empty %}
+                    <p>No similar positions available at the moment.</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Copy job URL functionality
+        const copyBtn = document.querySelector('.copy-link');
+        if (copyBtn) {
+            copyBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const url = window.location.href;
+                navigator.clipboard.writeText(url).then(() => {
+                    alert('Job URL copied to clipboard!');
+                });
+            });
+        }
+    });
+</script>
+{% endblock %}
