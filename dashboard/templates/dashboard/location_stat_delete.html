@@ -1,0 +1,50 @@
+<!-- dashboard/templates/dashboard/location_stat_delete.html -->
+
+{% extends 'dashboard/base.html' %}
+
+{% block title %}Delete Location Statistic - {{ site_settings.site_name }}{% endblock %}
+
+{% block page_title %}Delete Location Statistic{% endblock %}
+
+{% block breadcrumb %}
+<span> / </span>
+<a href="{% url 'dashboard:manage_location' %}">Locations</a>
+<span> / </span>
+<a>Delete Statistic</a>
+{% endblock %}
+
+{% block content %}
+<div class="content-body">
+    <div class="card">
+        <div class="card-header">
+            <h5>Confirm Deletion</h5>
+        </div>
+        <div class="card-body">
+            <div class="alert alert-danger">
+                <i class="fas fa-exclamation-triangle"></i>
+                Are you sure you want to delete the statistic <strong>"{{ stat.label }}"</strong>?
+            </div>
+            <p>This action cannot be undone.</p>
+            
+            <div class="stat-details mb-4">
+                <h6>Statistic Details:</h6>
+                <ul>
+                    <li><strong>Label:</strong> {{ stat.label }}</li>
+                    <li><strong>Value:</strong> {{ stat.value }}</li>
+                    <li><strong>Display Order:</strong> {{ stat.display_order }}</li>
+                </ul>
+            </div>
+            
+            <form method="post" class="d-flex justify-content-between">
+                {% csrf_token %}
+                <a href="{% url 'dashboard:manage_location' %}" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Cancel
+                </a>
+                <button type="submit" class="btn btn-danger">
+                    <i class="fas fa-trash"></i> Delete Statistic
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
