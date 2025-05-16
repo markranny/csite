@@ -1,0 +1,129 @@
+{% extends 'dashboard/base.html' %}
+
+{% block title %}{% if model %}Edit{% else %}Add{% endif %} Franchise Model - {{ site_settings.site_name }}{% endblock %}
+
+{% block page_title %}{% if model %}Edit{% else %}Add{% endif %} Franchise Model{% endblock %}
+
+{% block breadcrumb %}
+<span> / </span>
+<a href="{% url 'dashboard:manage_franchise' %}">Franchise</a>
+<span> / </span>
+<a>{% if model %}Edit{% else %}Add{% endif %} Franchise Model</a>
+{% endblock %}
+
+{% block content %}
+<div class="content-body">
+    <div class="card">
+        <div class="card-header">
+            <h5>{% if model %}Edit{% else %}Add{% endif %} Franchise Model</h5>
+        </div>
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <h6 class="section-title">Basic Information</h6>
+                        <div class="mb-3">
+                            <label for="{{ form.name.id_for_label }}" class="form-label">Name *</label>
+                            {{ form.name }}
+                            <small class="form-text text-muted">Example: "Express Store", "Standard Store", "Premium Store"</small>
+                            {% if form.name.errors %}
+                            <div class="invalid-feedback d-block">{{ form.name.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="mb-3">
+                            <label for="{{ form.price.id_for_label }}" class="form-label">Price *</label>
+                            {{ form.price }}
+                            <small class="form-text text-muted">Total investment amount</small>
+                            {% if form.price.errors %}
+                            <div class="invalid-feedback d-block">{{ form.price.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="mb-3">
+                            <label for="{{ form.space_required.id_for_label }}" class="form-label">Space Required *</label>
+                            {{ form.space_required }}
+                            <small class="form-text text-muted">Example: "500-800 sq ft", "1,000-1,500 sq ft"</small>
+                            {% if form.space_required.errors %}
+                            <div class="invalid-feedback d-block">{{ form.space_required.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="mb-3">
+                            <label for="{{ form.display_order.id_for_label }}" class="form-label">Display Order</label>
+                            {{ form.display_order }}
+                            <small class="form-text text-muted">Lower numbers appear first</small>
+                            {% if form.display_order.errors %}
+                            <div class="invalid-feedback d-block">{{ form.display_order.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="mb-3 form-check">
+                            {{ form.is_recommended }}
+                            <label for="{{ form.is_recommended.id_for_label }}" class="form-check-label">Recommended Option</label>
+                            <small class="form-text text-muted d-block">Highlight this as the recommended franchise model</small>
+                            {% if form.is_recommended.errors %}
+                            <div class="invalid-feedback d-block">{{ form.is_recommended.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="mb-3 form-check">
+                            {{ form.is_active }}
+                            <label for="{{ form.is_active.id_for_label }}" class="form-check-label">Active</label>
+                            {% if form.is_active.errors %}
+                            <div class="invalid-feedback d-block">{{ form.is_active.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <h6 class="section-title">Key Features</h6>
+                        <div class="mb-3">
+                            <label for="{{ form.features.id_for_label }}" class="form-label">Features *</label>
+                            {{ form.features }}
+                            <small class="form-text text-muted">Enter one feature per line. These will be displayed as bullet points.</small>
+                            {% if form.features.errors %}
+                            <div class="invalid-feedback d-block">{{ form.features.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="{{ form.description.id_for_label }}" class="form-label">Description *</label>
+                    {{ form.description }}
+                    {% if form.description.errors %}
+                    <div class="invalid-feedback d-block">{{ form.description.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Save Franchise Model
+                    </button>
+                    <a href="{% url 'dashboard:manage_franchise' %}" class="btn btn-secondary">
+                        <i class="fas fa-times"></i> Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'ckeditor/ckeditor.css' %}">
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'ckeditor/ckeditor.js' %}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize CKEditor if not already done by Django
+        if (typeof CKEDITOR !== 'undefined' && CKEDITOR) {
+            const descriptionTextarea = document.querySelector('#{{ form.description.id_for_label }}');
+            if (descriptionTextarea && !descriptionTextarea.classList.contains('ckeditor-initialized')) {
+                CKEDITOR.replace('{{ form.description.id_for_label }}');
+                descriptionTextarea.classList.add('ckeditor-initialized');
+            }
+        }
+    });
+</script>
+{% endblock %}

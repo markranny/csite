@@ -1,0 +1,70 @@
+{% extends 'dashboard/base.html' %}
+
+{% block title %}Edit Benefit - {{ site_settings.site_name }}{% endblock %}
+
+{% block page_title %}{% if benefit %}Edit{% else %}Add{% endif %} Employee Benefit{% endblock %}
+
+{% block breadcrumb %}
+<span> / </span>
+<a href="{% url 'dashboard:manage_career' %}">Careers</a>
+<span> / </span>
+<a>{% if benefit %}Edit{% else %}Add{% endif %} Benefit</a>
+{% endblock %}
+
+{% block content %}
+<div class="content-body">
+    <div class="card">
+        <div class="card-header">
+            <h5>{% if benefit %}Edit{% else %}Add{% endif %} Employee Benefit</h5>
+        </div>
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                
+                <div class="mb-3">
+                    <label for="{{ form.title.id_for_label }}" class="form-label">Title *</label>
+                    {{ form.title }}
+                    {% if form.title.errors %}
+                    <div class="invalid-feedback d-block">{{ form.title.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="mb-3">
+                    <label for="{{ form.description.id_for_label }}" class="form-label">Description *</label>
+                    {{ form.description }}
+                    {% if form.description.errors %}
+                    <div class="invalid-feedback d-block">{{ form.description.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="mb-3">
+                    <label for="{{ form.icon.id_for_label }}" class="form-label">Icon Class *</label>
+                    {{ form.icon }}
+                    <small class="form-text text-muted">Font Awesome icon class (e.g., fa-heart, fa-money-bill, fa-graduation-cap)</small>
+                    {% if form.icon.errors %}
+                    <div class="invalid-feedback d-block">{{ form.icon.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="mb-3">
+                    <label for="{{ form.display_order.id_for_label }}" class="form-label">Display Order</label>
+                    {{ form.display_order }}
+                    <small class="form-text text-muted">Lower numbers appear first</small>
+                    {% if form.display_order.errors %}
+                    <div class="invalid-feedback d-block">{{ form.display_order.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Save Benefit
+                    </button>
+                    <a href="{% url 'dashboard:manage_career' %}" class="btn btn-secondary">
+                        <i class="fas fa-times"></i> Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends 'dashboard/base.html' %}
+
+{% block title %}Delete Process Step - {{ site_settings.site_name }}{% endblock %}
+
+{% block page_title %}Delete Process Step{% endblock %}
+
+{% block breadcrumb %}
+<span> / </span>
+<a href="{% if step.process_type == 'career' %}{% url 'dashboard:manage_career' %}{% else %}{% url 'dashboard:manage_franchise' %}{% endif %}">
+    {% if step.process_type == 'career' %}Careers{% else %}Franchise{% endif %}
+</a>
+<span> / </span>
+<a>Delete Process Step</a>
+{% endblock %}
+
+{% block content %}
+<div class="content-body">
+    <div class="card">
+        <div class="card-header">
+            <h5>Confirm Deletion</h5>
+        </div>
+        <div class="card-body">
+            <div class="alert alert-danger">
+                <i class="fas fa-exclamation-triangle"></i>
+                Are you sure you want to delete the process step <strong>"{{ step.title }}"</strong>?
+            </div>
+            <p>This action cannot be undone.</p>
+            
+            <div class="step-details mb-4">
+                <h6>Step Details:</h6>
+                <ul>
+                    <li><strong>Process Type:</strong> {{ step.get_process_type_display }}</li>
+                    <li><strong>Step Number:</strong> {{ step.step_number }}</li>
+                    <li><strong>Title:</strong> {{ step.title }}</li>
+                    <li><strong>Description:</strong> {{ step.description|truncatechars:150 }}</li>
+                </ul>
+            </div>
+            
+            <form method="post" class="d-flex justify-content-between">
+                {% csrf_token %}
+                <a href="{% if step.process_type == 'career' %}{% url 'dashboard:manage_career' %}{% else %}{% url 'dashboard:manage_franchise' %}{% endif %}" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Cancel
+                </a>
+                <button type="submit" class="btn btn-danger">
+                    <i class="fas fa-trash"></i> Delete Step
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,84 @@
+{% extends 'dashboard/base.html' %}
+
+{% block title %}{% if item %}Edit{% else %}Add{% endif %} Investment Breakdown - {{ site_settings.site_name }}{% endblock %}
+
+{% block page_title %}{% if item %}Edit{% else %}Add{% endif %} Investment Component{% endblock %}
+
+{% block breadcrumb %}
+<span> / </span>
+<a href="{% url 'dashboard:manage_franchise' %}">Franchise</a>
+<span> / </span>
+<a>{% if item %}Edit{% else %}Add{% endif %} Investment Component</a>
+{% endblock %}
+
+{% block content %}
+<div class="content-body">
+    <div class="card">
+        <div class="card-header">
+            <h5>{% if item %}Edit{% else %}Add{% endif %} Investment Breakdown Component</h5>
+        </div>
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                
+                <div class="mb-3">
+                    <label for="{{ form.component.id_for_label }}" class="form-label">Component Name *</label>
+                    {{ form.component }}
+                    <small class="form-text text-muted">Example: "Initial Franchise Fee", "Equipment", "Build-out Costs"</small>
+                    {% if form.component.errors %}
+                    <div class="invalid-feedback d-block">{{ form.component.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label for="{{ form.express_cost.id_for_label }}" class="form-label">Express Cost *</label>
+                            {{ form.express_cost }}
+                            {% if form.express_cost.errors %}
+                            <div class="invalid-feedback d-block">{{ form.express_cost.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label for="{{ form.standard_cost.id_for_label }}" class="form-label">Standard Cost *</label>
+                            {{ form.standard_cost }}
+                            {% if form.standard_cost.errors %}
+                            <div class="invalid-feedback d-block">{{ form.standard_cost.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label for="{{ form.premium_cost.id_for_label }}" class="form-label">Premium Cost *</label>
+                            {{ form.premium_cost }}
+                            {% if form.premium_cost.errors %}
+                            <div class="invalid-feedback d-block">{{ form.premium_cost.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="{{ form.display_order.id_for_label }}" class="form-label">Display Order</label>
+                    {{ form.display_order }}
+                    <small class="form-text text-muted">Lower numbers appear first</small>
+                    {% if form.display_order.errors %}
+                    <div class="invalid-feedback d-block">{{ form.display_order.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Save Component
+                    </button>
+                    <a href="{% url 'dashboard:manage_franchise' %}?tab=investments" class="btn btn-secondary">
+                        <i class="fas fa-times"></i> Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
