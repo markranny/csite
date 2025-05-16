@@ -1,6 +1,7 @@
 # dashboard/forms.py
 
 from django import forms
+from dashboard.models import DashboardUserPreference
 from ckeditor_uploader.widgets import CKEditorUploadingWidget
 from bakeshop.models import (
     SiteSettings, HomeSection, HomeBanner, 
@@ -27,6 +28,18 @@ class SiteSettingsForm(forms.ModelForm):
             'instagram_url': forms.URLInput(attrs={'class': 'form-control'}),
             'twitter_url': forms.URLInput(attrs={'class': 'form-control'}),
             'footer_text': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+        }
+
+class UserPreferenceForm(forms.ModelForm):
+    """Form for updating user dashboard preferences"""
+    class Meta:
+        model = DashboardUserPreference
+        fields = ('items_per_page', 'default_view', 'color_theme', 'email_notifications')
+        widgets = {
+            'items_per_page': forms.NumberInput(attrs={'class': 'form-control', 'min': 5, 'max': 100}),
+            'default_view': forms.Select(attrs={'class': 'form-select'}),
+            'color_theme': forms.Select(attrs={'class': 'form-select'}),
+            'email_notifications': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
         }
 
 
