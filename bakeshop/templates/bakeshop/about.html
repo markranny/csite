@@ -5,7 +5,375 @@
 {% block title %}About Us - {{ site_settings.site_name }}{% endblock %}
 
 {% block extra_css %}
+<style>
+  /* About page specific styles */
+  .about-hero {
+    padding: 150px 0;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    color: #fff;
+    text-align: center;
+  }
 
+  .about-hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+  }
+
+  .about-hero-content {
+    position: relative;
+    z-index: 1;
+  }
+
+  .about-hero-content h1 {
+    font-size: 42px;
+    margin-bottom: 15px;
+    font-weight: 700;
+  }
+
+  .about-hero-content p {
+    font-size: 18px;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  .about-section {
+    padding: 80px 0;
+  }
+
+  .about-section:nth-child(even) {
+    background-color: #f9f5f0;
+  }
+
+  .section-title {
+    text-align: center;
+    margin-bottom: 50px;
+    position: relative;
+  }
+
+  .section-title h2 {
+    font-size: 36px;
+    margin-bottom: 20px;
+    position: relative;
+    padding-bottom: 15px;
+  }
+
+  .section-title h2:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 3px;
+    background: #8c5e17;
+    display: block;
+  }
+
+  .section-title p {
+    color: #666;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  .story-image {
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  }
+
+  .story-image img {
+    width: 100%;
+    height: auto;
+    transition: transform 0.5s ease;
+  }
+
+  .story-image:hover img {
+    transform: scale(1.05);
+  }
+
+  .story-content {
+    padding: 20px;
+  }
+
+  .values-section {
+    text-align: center;
+  }
+
+  .value-card {
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 30px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    height: 100%;
+    transition: all 0.3s ease;
+  }
+
+  .value-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+  }
+
+  .value-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 20px;
+    background-color: #8c5e17;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .value-icon i {
+    font-size: 36px;
+    color: #fff;
+  }
+
+  .value-card h3 {
+    font-size: 22px;
+    margin-bottom: 15px;
+  }
+
+  .values-content {
+    margin-top: 40px;
+  }
+
+  .mission-content {
+    text-align: center;
+    padding: 20px;
+  }
+
+  .team-member {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  .team-image {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin: 0 auto 20px;
+    border: 5px solid #8c5e17;
+  }
+
+  .team-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+
+  .team-member:hover .team-image img {
+    transform: scale(1.1);
+  }
+
+  .team-member h3 {
+    font-size: 22px;
+    margin-bottom: 5px;
+  }
+
+  .team-member .position {
+    font-style: italic;
+    color: #8c5e17;
+    margin-bottom: 15px;
+  }
+
+  .awards-section {
+    background-color: #f9f5f0;
+  }
+
+  .award-card {
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 30px;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    height: 100%;
+    transition: all 0.3s ease;
+    margin-bottom: 30px;
+  }
+
+  .award-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+  }
+
+  .award-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 20px;
+    background-color: #8c5e17;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .award-icon i {
+    font-size: 36px;
+    color: #fff;
+  }
+
+  .award-year {
+    font-size: 20px;
+    font-weight: 700;
+    color: #8c5e17;
+    margin-bottom: 10px;
+  }
+
+  .timeline-section {
+    position: relative;
+  }
+
+  .timeline {
+    position: relative;
+    padding: 40px 0;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 2px;
+    height: 100%;
+    background-color: #8c5e17;
+  }
+
+  .timeline-item {
+    margin-bottom: 70px;
+    position: relative;
+  }
+
+  .timeline-dot {
+    width: 20px;
+    height: 20px;
+    background-color: #8c5e17;
+    border-radius: 50%;
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+  }
+
+  .timeline-year {
+    width: 120px;
+    height: 40px;
+    background-color: #8c5e17;
+    color: #fff;
+    text-align: center;
+    line-height: 40px;
+    border-radius: 20px;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    font-weight: 700;
+  }
+
+  .timeline-content {
+    width: 45%;
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 30px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    margin-top: 60px;
+    transition: all 0.3s ease;
+  }
+  
+  .timeline-content:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+  }
+
+  .timeline-item:nth-child(odd) .timeline-content {
+    margin-left: auto;
+  }
+
+  .gallery-item {
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 30px;
+  }
+
+  .gallery-item:hover {
+    transform: scale(1.05);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Responsive styles */
+  @media (max-width: 992px) {
+    .about-hero-content h1 {
+      font-size: 36px;
+    }
+    
+    .section-title h2 {
+      font-size: 30px;
+    }
+    
+    .timeline::before {
+      left: 20px;
+    }
+    
+    .timeline-dot {
+      left: 20px;
+    }
+    
+    .timeline-year {
+      left: 90px;
+    }
+    
+    .timeline-content {
+      width: calc(100% - 120px);
+      margin-left: 120px !important;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .about-hero-content h1 {
+      font-size: 32px;
+    }
+    
+    .about-hero-content p {
+      font-size: 16px;
+    }
+    
+    .team-image {
+      width: 150px;
+      height: 150px;
+    }
+  }
+
+  @media (max-width: 576px) {
+    .about-hero {
+      padding: 120px 0 80px;
+    }
+    
+    .about-hero-content h1 {
+      font-size: 28px;
+    }
+    
+    .section-title h2 {
+      font-size: 26px;
+    }
+    
+    .about-section {
+      padding: 60px 0;
+    }
+  }
+</style>
 {% endblock %}
 
 {% block content %}
@@ -32,9 +400,9 @@
             <div class="col-lg-6">
                 <div class="story-image">
                     {% if sections.story.image %}
-                        <img src="{{ sections.story.image.url }}" alt="Our Story">
+                        <img src="{{ sections.story.image.url }}" alt="Our Story" id="storyImage">
                     {% else %}
-                        <img src="{% static 'images/story.jpg' %}" alt="Our Story">
+                        <img src="{% static 'images/story.jpg' %}" alt="Our Story" id="storyImage">
                     {% endif %}
                 </div>
             </div>
@@ -58,7 +426,7 @@
         
         <div class="row">
             <div class="col-md-4">
-                <div class="value-card">
+                <div class="value-card" id="valueCard1">
                     <div class="value-icon">
                         <i class="fas fa-heart"></i>
                     </div>
@@ -67,7 +435,7 @@
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="value-card">
+                <div class="value-card" id="valueCard2">
                     <div class="value-icon">
                         <i class="fas fa-check-circle"></i>
                     </div>
@@ -76,7 +444,7 @@
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="value-card">
+                <div class="value-card" id="valueCard3">
                     <div class="value-icon">
                         <i class="fas fa-lightbulb"></i>
                     </div>
@@ -124,7 +492,7 @@
             <p>The talented people behind our delicious creations</p>
         </div>
         
-        <div class="row">
+        <div class="row" id="teamContainer">
             {% for member in team_members %}
             <div class="col-md-4">
                 <div class="team-member">
@@ -199,7 +567,7 @@
             <p>The milestones that shaped our bakery through the years</p>
         </div>
         
-        <div class="timeline">
+        <div class="timeline" id="timeline">
             {% for event in timeline_events %}
             <div class="timeline-item">
                 <div class="timeline-dot"></div>
@@ -224,7 +592,7 @@
             <p>A glimpse into our bakery world</p>
         </div>
         
-        <div class="row">
+        <div class="row" id="galleryContainer">
             {% for image in gallery_images %}
             <div class="col-md-4 mb-4">
                 <div class="gallery-item">
@@ -241,7 +609,7 @@
 {% block extra_js %}
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Smooth scrolling
+        // Smooth scrolling for anchor links
         const scrollLinks = document.querySelectorAll('.smooth-scroll');
         for (const link of scrollLinks) {
             link.addEventListener('click', function(e) {
@@ -256,6 +624,162 @@
                 }
             });
         }
+
+        // Animate story image on scroll
+        const storyImage = document.getElementById('storyImage');
+        if (storyImage) {
+            window.addEventListener('scroll', function() {
+                const position = storyImage.getBoundingClientRect();
+                
+                // If element is visible in viewport
+                if(position.top < window.innerHeight && position.bottom >= 0) {
+                    storyImage.style.opacity = '1';
+                    storyImage.style.transform = 'scale(1)';
+                }
+            });
+            
+            // Set initial state
+            storyImage.style.opacity = '0.8';
+            storyImage.style.transform = 'scale(0.95)';
+            storyImage.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+            
+            // Trigger the check immediately
+            window.dispatchEvent(new Event('scroll'));
+        }
+
+        // Animate value cards with staggered delay
+        const valueCards = [
+            document.getElementById('valueCard1'),
+            document.getElementById('valueCard2'),
+            document.getElementById('valueCard3')
+        ];
+        
+        valueCards.forEach((card, index) => {
+            if (card) {
+                // Set initial states
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                
+                // Add intersection observer
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            setTimeout(() => {
+                                card.style.opacity = '1';
+                                card.style.transform = 'translateY(0)';
+                            }, 200 * index); // Staggered animation
+                            observer.unobserve(card);
+                        }
+                    });
+                }, { threshold: 0.2 });
+                
+                observer.observe(card);
+            }
+        });
+
+        // Timeline animation on scroll
+        const timelineItems = document.querySelectorAll('.timeline-item');
+        timelineItems.forEach((item, index) => {
+            // Set initial state
+            item.style.opacity = '0';
+            item.style.transform = index % 2 === 0 ? 'translateX(-20px)' : 'translateX(20px)';
+            item.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+            
+            // Add intersection observer
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        setTimeout(() => {
+                            item.style.opacity = '1';
+                            item.style.transform = 'translateX(0)';
+                        }, 200 * index); // Staggered animation
+                        observer.unobserve(item);
+                    }
+                });
+            }, { threshold: 0.2 });
+            
+            observer.observe(item);
+        });
+
+        // Team members hover effect
+        const teamMembers = document.querySelectorAll('.team-member');
+        teamMembers.forEach(member => {
+            member.addEventListener('mouseenter', function() {
+                this.querySelector('.bio').style.color = '#8c5e17';
+            });
+            
+            member.addEventListener('mouseleave', function() {
+                this.querySelector('.bio').style.color = '#666';
+            });
+        });
+
+        // Gallery items click for larger view
+        const galleryItems = document.querySelectorAll('.gallery-item');
+        galleryItems.forEach(item => {
+            item.addEventListener('click', function() {
+                const img = this.querySelector('img');
+                
+                // Create modal for larger view
+                const modal = document.createElement('div');
+                modal.style.position = 'fixed';
+                modal.style.top = '0';
+                modal.style.left = '0';
+                modal.style.width = '100%';
+                modal.style.height = '100%';
+                modal.style.backgroundColor = 'rgba(0,0,0,0.9)';
+                modal.style.display = 'flex';
+                modal.style.alignItems = 'center';
+                modal.style.justifyContent = 'center';
+                modal.style.zIndex = '9999';
+                modal.style.cursor = 'pointer';
+                
+                const enlargedImg = document.createElement('img');
+                enlargedImg.src = img.src;
+                enlargedImg.style.maxWidth = '90%';
+                enlargedImg.style.maxHeight = '90%';
+                enlargedImg.style.borderRadius = '5px';
+                
+                modal.appendChild(enlargedImg);
+                document.body.appendChild(modal);
+                
+                modal.addEventListener('click', function() {
+                    this.remove();
+                });
+            });
+        });
+        
+        // Check if elements are in viewport and add animation classes
+        function checkVisibility() {
+            const elementsToAnimate = document.querySelectorAll('.section-title, .award-card, .gallery-item');
+            
+            elementsToAnimate.forEach(element => {
+                const position = element.getBoundingClientRect();
+                
+                // If element is visible in viewport
+                if(position.top < window.innerHeight && position.bottom >= 0) {
+                    if (!element.classList.contains('animated')) {
+                        element.classList.add('animated');
+                        element.style.opacity = '1';
+                        element.style.transform = 'translateY(0)';
+                    }
+                }
+            });
+        }
+        
+        // Set initial state for elements to animate
+        const elementsToAnimate = document.querySelectorAll('.section-title, .award-card, .gallery-item');
+        elementsToAnimate.forEach(element => {
+            element.style.opacity = '0';
+            element.style.transform = 'translateY(20px)';
+            element.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+        });
+        
+        // Listen for scroll events
+        window.addEventListener('scroll', checkVisibility);
+        
+        // Check on initial load
+        checkVisibility();
     });
 </script>
 {% endblock %}
