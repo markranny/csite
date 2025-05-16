@@ -1,0 +1,92 @@
+<!-- dashboard/templates/dashboard/featured_item_form.html -->
+
+{% extends 'dashboard/base.html' %}
+
+{% block title %}{% if item %}Edit{% else %}Add{% endif %} Featured Item - {{ site_settings.site_name }}{% endblock %}
+
+{% block page_title %}{% if item %}Edit{% else %}Add{% endif %} Featured Item{% endblock %}
+
+{% block breadcrumb %}
+<span> / </span>
+<a href="{% url 'dashboard:manage_menu' %}">Menu</a>
+<span> / </span>
+<a>{% if item %}Edit{% else %}Add{% endif %} Featured Item</a>
+{% endblock %}
+
+{% block content %}
+<div class="content-body">
+    <div class="card">
+        <div class="card-header">
+            <h5>{% if item %}Edit{% else %}Add{% endif %} Featured Item</h5>
+        </div>
+        <div class="card-body">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                <div class="mb-3">
+                    <label for="{{ form.title.id_for_label }}" class="form-label">Title *</label>
+                    {{ form.title }}
+                    {% if form.title.errors %}
+                    <div class="invalid-feedback d-block">{{ form.title.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="mb-3">
+                    <label for="{{ form.description.id_for_label }}" class="form-label">Description *</label>
+                    {{ form.description }}
+                    {% if form.description.errors %}
+                    <div class="invalid-feedback d-block">{{ form.description.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="mb-3">
+                    <label for="{{ form.price.id_for_label }}" class="form-label">Price *</label>
+                    {{ form.price }}
+                    {% if form.price.errors %}
+                    <div class="invalid-feedback d-block">{{ form.price.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="mb-3">
+                    <label for="{{ form.image.id_for_label }}" class="form-label">Image *</label>
+                    {% if item and item.image %}
+                    <div class="mb-2">
+                        <img src="{{ item.image.url }}" alt="{{ item.title }}" class="img-thumbnail" style="max-height: 150px;">
+                    </div>
+                    {% endif %}
+                    {{ form.image }}
+                    {% if form.image.errors %}
+                    <div class="invalid-feedback d-block">{{ form.image.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="mb-3">
+                    <label for="{{ form.display_order.id_for_label }}" class="form-label">Display Order</label>
+                    {{ form.display_order }}
+                    <small class="form-text text-muted">Lower numbers appear first.</small>
+                    {% if form.display_order.errors %}
+                    <div class="invalid-feedback d-block">{{ form.display_order.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="mb-3 form-check">
+                    {{ form.is_active }}
+                    <label for="{{ form.is_active.id_for_label }}" class="form-check-label">Active</label>
+                    {% if form.is_active.errors %}
+                    <div class="invalid-feedback d-block">{{ form.is_active.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Save Featured Item
+                    </button>
+                    <a href="{% url 'dashboard:manage_menu' %}?tab=featured" class="btn btn-secondary">
+                        <i class="fas fa-times"></i> Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
