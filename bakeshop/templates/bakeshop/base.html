@@ -22,9 +22,10 @@
         <link rel="icon" href="{{ site_settings.favicon.url }}">
     {% endif %}
     
-    <!-- Fixed base.html CSS loading -->
+    <!-- Load static tag first -->
     {% load static %}
-        <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <!-- Then include your CSS file with the correct path -->
+    <link rel="stylesheet" href="{% static 'bakeshop/css/style.css' %}">
     
     {% block extra_css %}{% endblock %}
 </head>
