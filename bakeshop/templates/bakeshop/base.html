@@ -14,14 +14,17 @@
     <!-- Fonts -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600&display=swap">
     
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    
     <!-- Favicon -->
     {% if site_settings.favicon %}
         <link rel="icon" href="{{ site_settings.favicon.url }}">
     {% endif %}
     
-    <!-- CSS -->
+    <!-- Fixed base.html CSS loading -->
     {% load static %}
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+        <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     
     {% block extra_css %}{% endblock %}
 </head>

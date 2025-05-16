@@ -125,25 +125,25 @@ urlpatterns = [
     path('settings/', views.site_settings, name='site_settings'),
 
     # User preferences
-    path('preferences/', views.user_preferences, name='user_preferences'),
+    #path('preferences/', views.user_preferences, name='user_preferences'),
     
     # Activity logs
-    path('activity-logs/', views.activity_logs, name='activity_logs'),
-    path('activity-logs/clear/', views.clear_activity_logs, name='clear_activity_logs'),
+    #path('activity-logs/', views.activity_logs, name='activity_logs'),
+    #path('activity-logs/clear/', views.clear_activity_logs, name='clear_activity_logs'),
     
     # Analytics dashboard
-    path('analytics/', views.analytics_dashboard, name='analytics'),
+    #path('analytics/', views.analytics_dashboard, name='analytics'),
     
     # Export data
-    path('export/locations/', views.export_locations, name='export_locations'),
-    path('export/menu/', views.export_menu, name='export_menu'),
-    path('export/careers/', views.export_careers, name='export_careers'),
+    #path('export/locations/', views.export_locations, name='export_locations'),
+    #path('export/menu/', views.export_menu, name='export_menu'),
+    #path('export/careers/', views.export_careers, name='export_careers'),
     
     # Import data
-    path('import/', views.import_data, name='import_data'),
-    path('import/preview/', views.import_preview, name='import_preview'),
-    path('import/process/', views.process_import, name='process_import'),
+    #path('import/', views.import_data, name='import_data'),
+    #path('import/preview/', views.import_preview, name='import_preview'),
+    #path('import/process/', views.process_import, name='process_import'),
     
     # Help section
-    path('help/', views.dashboard_help, name='help'),
+    #path('help/', views.dashboard_help, name='help'),
 ]
