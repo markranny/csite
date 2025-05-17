@@ -1,0 +1,1692 @@
+{% extends 'bakeshop/base.html' %}
+{% load bakeshop_tags %}
+{% load static %}
+
+{% block title %}{{ site_settings.site_name }} - {{ site_settings.site_tagline }}{% endblock %}
+
+{% block extra_css %}
+<style>
+  :root {
+    --primary-color: #0a2463;
+    --primary-light: #173785;
+    --primary-dark: #061641;
+    --secondary-color: #f9f5f0;
+    --accent-color: #e6b36d;
+    --text-color: #333;
+    --light-color: #fff;
+  }
+
+  /* Hero Banner Styles */
+  .hero-banner {
+    position: relative;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  .banner-slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+    background-size: cover;
+    background-position: center;
+  }
+
+  .banner-slide.active {
+    opacity: 1;
+  }
+
+  .banner-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+  }
+
+  .banner-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: var(--light-color);
+    width: 90%;
+    max-width: 800px;
+    z-index: 2;
+  }
+
+  .banner-content h1 {
+    font-size: 3.5rem;
+    margin-bottom: 1rem;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+    transition-delay: 0.3s;
+  }
+
+  .banner-content p {
+    font-size: 1.25rem;
+    margin-bottom: 2rem;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+    transition-delay: 0.5s;
+  }
+
+  .banner-content .btn {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+    transition-delay: 0.7s;
+  }
+
+  .banner-slide.active .banner-content h1,
+  .banner-slide.active .banner-content p,
+  .banner-slide.active .banner-content .btn {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .banner-arrows {
+    position: absolute;
+    bottom: 50px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    z-index: 3;
+  }
+
+  .banner-arrow {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .banner-arrow:hover {
+    background-color: var(--accent-color);
+  }
+
+  .banner-arrow svg {
+    width: 24px;
+    height: 24px;
+    fill: var(--light-color);
+  }
+
+  .banner-dots {
+    position: absolute;
+    bottom: 30px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    z-index: 3;
+  }
+
+  .banner-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.3);
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .banner-dot.active {
+    background-color: var(--accent-color);
+    transform: scale(1.2);
+  }
+
+  /* Welcome Section */
+  .welcome-section {
+    padding: 100px 0;
+    background-color: var(--secondary-color);
+    position: relative;
+  }
+
+  .welcome-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('{% static "images/pattern.png" %}');
+    background-size: 200px;
+    background-repeat: repeat;
+    opacity: 0.05;
+  }
+
+  .section-title {
+    text-align: center;
+    margin-bottom: 50px;
+    position: relative;
+  }
+
+  .section-title h2 {
+    font-size: 36px;
+    margin-bottom: 15px;
+    color: var(--primary-color);
+    position: relative;
+    display: inline-block;
+    padding-bottom: 15px;
+  }
+
+  .section-title h2::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 3px;
+    background: var(--accent-color);
+  }
+
+  .section-title p {
+    max-width: 700px;
+    margin: 0 auto;
+    color: var(--text-color);
+    font-size: 1.1rem;
+  }
+
+  .welcome-content {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .welcome-img {
+    position: relative;
+    width: 100%;
+    height: 300px;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 30px;
+  }
+
+  .welcome-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+
+  .welcome-img:hover img {
+    transform: scale(1.05);
+  }
+
+  .welcome-img.no-image {
+    background-color: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #999;
+  }
+
+  /* Featured Products Section */
+  .featured-section {
+    padding: 100px 0;
+    background-color: #fff;
+  }
+
+  .featured-products {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    justify-content: center;
+  }
+
+  .product-card {
+    width: calc(33.33% - 20px);
+    background-color: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+  }
+
+  .product-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+  }
+
+  .product-img {
+    height: 250px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .product-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+
+  .product-card:hover .product-img img {
+    transform: scale(1.1);
+  }
+
+  .product-img.no-image {
+    background-color: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #999;
+  }
+
+  .badge-bestseller {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: var(--accent-color);
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+  }
+
+  .product-content {
+    padding: 20px;
+    text-align: center;
+  }
+
+  .product-title {
+    font-size: 20px;
+    color: var(--primary-color);
+    margin-bottom: 10px;
+  }
+
+  .product-price {
+    font-size: 24px;
+    color: var(--accent-color);
+    font-weight: 700;
+    margin-bottom: 15px;
+  }
+
+  .product-description {
+    color: var(--text-color);
+    margin-bottom: 20px;
+    line-height: 1.5;
+  }
+
+  /* About Us Section */
+  .about-section {
+    padding: 100px 0;
+    background-color: var(--secondary-color);
+    position: relative;
+  }
+
+  .about-content {
+    display: flex;
+    align-items: center;
+    gap: 50px;
+  }
+
+  .about-image {
+    flex: 0 0 45%;
+    position: relative;
+  }
+
+  .about-image-wrapper {
+    width: 100%;
+    height: 450px;
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .about-image-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+
+  .about-image-wrapper:hover img {
+    transform: scale(1.05);
+  }
+
+  .about-image-wrapper.no-image {
+    background-color: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #999;
+  }
+
+  .about-image::before {
+    content: '';
+    position: absolute;
+    top: -20px;
+    left: -20px;
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    border: 5px solid var(--accent-color);
+    z-index: -1;
+  }
+
+  .about-text {
+    flex: 0 0 45%;
+  }
+
+  .about-text h2 {
+    font-size: 36px;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+    position: relative;
+    padding-bottom: 15px;
+  }
+
+  .about-text h2::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 80px;
+    height: 3px;
+    background: var(--accent-color);
+  }
+
+  .about-text p {
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+    line-height: 1.6;
+  }
+
+  /* Testimonial Section */
+  .testimonial-section {
+    padding: 100px 0;
+    background-color: #fff;
+    text-align: center;
+  }
+
+  .testimonial-slider {
+    max-width: 800px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  .testimonial-slide {
+    display: none;
+    text-align: center;
+    opacity: 0;
+    transition: opacity 0.5s ease-out;
+  }
+
+  .testimonial-slide.active {
+    display: block;
+    opacity: 1;
+  }
+
+  .testimonial-content {
+    font-size: 20px;
+    font-style: italic;
+    margin-bottom: 30px;
+    position: relative;
+    padding: 0 50px;
+    color: var(--text-color);
+  }
+
+  .testimonial-content::before,
+  .testimonial-content::after {
+    content: """;
+    font-size: 80px;
+    font-family: serif;
+    color: var(--accent-color);
+    position: absolute;
+    opacity: 0.3;
+  }
+
+  .testimonial-content::before {
+    top: -20px;
+    left: 0;
+  }
+
+  .testimonial-content::after {
+    content: """;
+    bottom: -60px;
+    right: 0;
+  }
+
+  .testimonial-author {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .author-image {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-right: 20px;
+    border: 3px solid var(--accent-color);
+  }
+
+  .author-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .author-image.no-image {
+    background-color: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #999;
+    font-size: 20px;
+  }
+
+  .author-info h4 {
+    font-size: 18px;
+    color: var(--primary-color);
+    margin-bottom: 5px;
+  }
+
+  .author-info p {
+    color: var(--text-color);
+    font-style: italic;
+  }
+
+  .testimonial-dots {
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+  }
+
+  .testimonial-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: #ddd;
+    margin: 0 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .testimonial-dot.active {
+    background-color: var(--accent-color);
+    transform: scale(1.2);
+  }
+
+  /* Stats Section */
+  .stats-section {
+    padding: 80px 0;
+    background-color: var(--primary-color);
+    color: #fff;
+    text-align: center;
+  }
+
+  .stats-container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 30px;
+  }
+
+  .stat-item {
+    flex: 0 0 calc(25% - 30px);
+    padding: 30px 20px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    transition: all 0.3s ease;
+  }
+
+  .stat-item:hover {
+    transform: translateY(-10px);
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+
+  .stat-icon {
+    font-size: 40px;
+    margin-bottom: 15px;
+    color: var(--accent-color);
+  }
+
+  .stat-value {
+    font-size: 36px;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+
+  .stat-label {
+    font-size: 18px;
+    opacity: 0.9;
+  }
+
+  /* Special Offers Section */
+  .offers-section {
+    padding: 100px 0;
+    background-color: var(--secondary-color);
+  }
+
+  .offer-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 30px;
+  }
+
+  .offer-card {
+    background-color: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+  }
+
+  .offer-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+  }
+
+  .offer-img {
+    height: 200px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .offer-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+
+  .offer-card:hover .offer-img img {
+    transform: scale(1.1);
+  }
+
+  .offer-img.no-image {
+    background-color: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #999;
+  }
+
+  .offer-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: var(--primary-color);
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: bold;
+  }
+
+  .offer-content {
+    padding: 20px;
+  }
+
+  .offer-title {
+    font-size: 22px;
+    color: var(--primary-color);
+    margin-bottom: 10px;
+  }
+
+  .offer-description {
+    color: var(--text-color);
+    margin-bottom: 15px;
+    line-height: 1.5;
+  }
+
+  .offer-expiry {
+    font-size: 14px;
+    color: #777;
+    margin-bottom: 15px;
+  }
+
+  /* Locations Section */
+  .locations-section {
+    padding: 100px 0;
+    background-color: #fff;
+  }
+
+  .location-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+  }
+
+  .location-card {
+    width: calc(33.33% - 20px);
+    background-color: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+  }
+
+  .location-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+  }
+
+  .location-img {
+    height: 200px;
+    overflow: hidden;
+  }
+
+  .location-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+
+  .location-card:hover .location-img img {
+    transform: scale(1.1);
+  }
+
+  .location-img.no-image {
+    background-color: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #999;
+  }
+
+  .location-content {
+    padding: 20px;
+  }
+
+  .location-name {
+    font-size: 20px;
+    color: var(--primary-color);
+    margin-bottom: 10px;
+  }
+
+  .location-address {
+    color: var(--text-color);
+    margin-bottom: 15px;
+  }
+
+  .location-phone {
+    color: var(--primary-color);
+    margin-bottom: 15px;
+    font-weight: 500;
+  }
+
+  .location-hours {
+    color: #777;
+    font-style: italic;
+    margin-bottom: 15px;
+  }
+
+  /* Franchise CTA Section */
+  .franchise-cta {
+    padding: 80px 0;
+    background-color: var(--primary-color);
+    color: #fff;
+    text-align: center;
+  }
+
+  .franchise-cta-content {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .franchise-cta h2 {
+    font-size: 36px;
+    margin-bottom: 20px;
+  }
+
+  .franchise-cta p {
+    font-size: 18px;
+    margin-bottom: 30px;
+    line-height: 1.6;
+  }
+
+  .btn-secondary {
+    background-color: var(--accent-color);
+    color: #fff;
+    border: none;
+    padding: 12px 30px;
+    font-size: 18px;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+  }
+
+  .btn-secondary:hover {
+    background-color: #d1a05c;
+    transform: translateY(-3px);
+  }
+
+  /* Newsletter Section */
+  .newsletter-section {
+    padding: 80px 0;
+    background-color: var(--secondary-color);
+    text-align: center;
+  }
+
+  .newsletter-content {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .newsletter-content h2 {
+    font-size: 32px;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+  }
+
+  .newsletter-content p {
+    font-size: 16px;
+    color: var(--text-color);
+    margin-bottom: 30px;
+  }
+
+  .newsletter-form {
+    display: flex;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+
+  .newsletter-form input {
+    flex-grow: 1;
+    height: 50px;
+    padding: 0 20px;
+    border: none;
+    border-radius: 5px 0 0 5px;
+    font-size: 16px;
+  }
+
+  .newsletter-form button {
+    height: 50px;
+    padding: 0 30px;
+    background-color: var(--primary-color);
+    color: #fff;
+    border: none;
+    border-radius: 0 5px 5px 0;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .newsletter-form button:hover {
+    background-color: var(--primary-light);
+  }
+
+  /* Media Queries */
+  @media (max-width: 1200px) {
+    .product-card, .location-card {
+      width: calc(50% - 15px);
+    }
+    
+    .stat-item {
+      flex: 0 0 calc(50% - 15px);
+    }
+  }
+
+  @media (max-width: 992px) {
+    .about-content {
+      flex-direction: column;
+      gap: 30px;
+    }
+    
+    .about-image, .about-text {
+      flex: 0 0 100%;
+    }
+    
+    .banner-content h1 {
+      font-size: 2.8rem;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .product-card, .location-card {
+      width: 100%;
+    }
+    
+    .stat-item {
+      flex: 0 0 100%;
+    }
+    
+    .banner-content h1 {
+      font-size: 2.2rem;
+    }
+    
+    .banner-content p {
+      font-size: 1.1rem;
+    }
+    
+    .section-title h2 {
+      font-size: 28px;
+    }
+    
+    .about-text h2 {
+      font-size: 28px;
+    }
+    
+    .banner-arrows {
+      display: none;
+    }
+    
+    .newsletter-form {
+      flex-direction: column;
+    }
+    
+    .newsletter-form input {
+      border-radius: 5px;
+      margin-bottom: 10px;
+    }
+    
+    .newsletter-form button {
+      border-radius: 5px;
+      width: 100%;
+    }
+  }
+
+  @media (max-width: 576px) {
+    .banner-content h1 {
+      font-size: 1.8rem;
+    }
+    
+    .banner-content p {
+      font-size: 1rem;
+    }
+    
+    .section-title h2 {
+      font-size: 24px;
+    }
+    
+    .welcome-section, .featured-section, .about-section, 
+    .testimonial-section, .offers-section, .locations-section {
+      padding: 60px 0;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Banner Section -->
+<section class="hero-banner">
+  {% if banners %}
+    {% for banner in banners %}
+    <div class="banner-slide {% if forloop.first %}active{% endif %}">
+      {% if banner.image_desktop %}
+        <img src="{{ banner.image_desktop.url }}" alt="{{ banner.title }}" class="banner-img">
+      {% else %}
+        <div class="banner-img default-image-svg">
+          <svg width="200" height="200" viewBox="0 0 24 24" fill="#0a2463">
+            <path d="M3 5v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2zm16 14H5V5h14v14zm-5.04-6.71l-2.75 3.54-1.96-2.36L6.5 17h11l-3.54-4.71z"/>
+          </svg>
+        </div>
+      {% endif %}
+      <div class="banner-overlay"></div>
+      <div class="banner-content">
+        <h1>{{ banner.title }}</h1>
+        <p>{{ banner.subtitle }}</p>
+        {% if banner.button_text and banner.link_url %}
+        <a href="{{ banner.link_url }}" class="btn btn-primary">{{ banner.button_text }}</a>
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
+    
+    <!-- Banner Navigation -->
+    <div class="banner-arrows">
+      <div class="banner-arrow prev">
+        <svg viewBox="0 0 24 24">
+          <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+        </svg>
+      </div>
+      <div class="banner-arrow next">
+        <svg viewBox="0 0 24 24">
+          <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+        </svg>
+      </div>
+    </div>
+    
+    <!-- Banner Dots -->
+    <div class="banner-dots">
+      {% for banner in banners %}
+      <div class="banner-dot {% if forloop.first %}active{% endif %}"></div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <!-- Default banner if no banners are available -->
+    <div class="banner-slide active">
+      <div class="banner-img default-image-svg" style="background-color: #0a2463;">
+        <svg width="200" height="200" viewBox="0 0 24 24" fill="#fff">
+          <path d="M12 6c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm0 8c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm0-12c4.42 0 8 3.58 8 8 0 1.65-.5 3.18-1.36 4.45l1.41 1.41c1.1-1.61 1.76-3.56 1.76-5.66 0-5.52-4.48-10-10-10-5.52 0-10 4.48-10 10 0 2.1.65 4.05 1.76 5.66l1.41-1.41c-.86-1.27-1.36-2.8-1.36-4.45 0-4.42 3.58-8 8-8zm1 3h-2v5h2V5z"/>
+        </svg>
+      </div>
+      <div class="banner-overlay"></div>
+      <div class="banner-content">
+        <h1>{{ site_settings.site_name }}</h1>
+        <p>{{ site_settings.site_tagline }}</p>
+        <a href="{% url 'bakeshop:menu' %}" class="btn btn-primary">View Our Menu</a>
+      </div>
+    </div>
+  {% endif %}
+</section>
+
+<!-- Welcome Section -->
+{% if sections.welcome %}
+<section class="welcome-section">
+  <div class="container">
+    <div class="section-title">
+      <h2>{{ sections.welcome.title }}</h2>
+      {% if sections.welcome.subtitle %}
+      <p>{{ sections.welcome.subtitle }}</p>
+      {% endif %}
+    </div>
+    
+    <div class="welcome-content">
+      {% if sections.welcome.image %}
+      <div class="welcome-img">
+        <img src="{{ sections.welcome.image.url }}" alt="{{ sections.welcome.title }}">
+      </div>
+      {% else %}
+      <div class="welcome-img no-image">
+        <svg width="100" height="100" viewBox="0 0 24 24" fill="#0a2463">
+          <path d="M22 20V4c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2zM4 4h16v6H4V4zm0 8h4v8H4v-8zm6 0h10v8H10v-8z"/>
+        </svg>
+      </div>
+      {% endif %}
+      
+      <div class="welcome-text">
+        {{ sections.welcome.content|safe }}
+      </div>
+      
+      <a href="{% url 'bakeshop:about' %}" class="btn btn-primary">Learn More About Us</a>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- Featured Products Section -->
+{% if sections.featured %}
+<section class="featured-section">
+  <div class="container">
+    <div class="section-title">
+      <h2>{{ sections.featured.title }}</h2>
+      {% if sections.featured.subtitle %}
+      <p>{{ sections.featured.subtitle }}</p>
+      {% endif %}
+    </div>
+    
+    <div class="featured-products">
+      {% for item in featured_items %}
+      <div class="product-card">
+        <div class="product-img {% if not item.image %}no-image{% endif %}">
+          {% if item.image %}
+          <img src="{{ item.image.url }}" alt="{{ item.title }}">
+          {% else %}
+          <svg width="80" height="80" viewBox="0 0 24 24" fill="#0a2463">
+            <path d="M1 21h15v2H1v-2zM6 18h15v2H6v-2zM11 15h15v2H11v-2zM16 12h15v2H16v-2zM21 9h15v2H21v-2zM21 4c0-1.1.9-2 2-2s2 .9 2 2-.9 2-2 2-2-.9-2-2zm-5 5c0-1.1.9-2 2-2s2 .9 2 2-.9 2-2 2-2-.9-2-2zm-5 5c0-1.1.9-2 2-2s2 .9 2 2-.9 2-2 2-2-.9-2-2zm-5 5c0-1.1.9-2 2-2s2 .9 2 2-.9 2-2 2-2-.9-2-2zm-5 5c0-1.1.9-2 2-2s2 .9 2 2-.9 2-2 2-2-.9-2-2z"/>
+          </svg>
+          {% endif %}
+          {% if item.is_bestseller %}
+          <div class="badge-bestseller">Best Seller</div>
+          {% endif %}
+        </div>
+        <div class="product-content">
+          <h3 class="product-title">{{ item.title }}</h3>
+          <div class="product-price">₱{{ item.price|floatformat:2 }}</div>
+          <p class="product-description">{{ item.description|truncatechars:100 }}</p>
+          <a href="{% url 'bakeshop:menu' %}" class="btn btn-primary">View Details</a>
+        </div>
+      </div>
+      {% empty %}
+      <!-- If no featured items -->
+      <div class="product-card">
+        <div class="product-img no-image">
+          <svg width="80" height="80" viewBox="0 0 24 24" fill="#0a2463">
+            <path d="M12 6c1.11 0 2-.9 2-2 0-1.11-.9-2-2-2-1.11 0-2 .9-2 2 0 1.1.9 2 2 2zm4.2 9.2v-2.5c0-.88-.72-1.62-1.6-1.62h-5.2c-.88 0-1.6.74-1.6 1.62v2.5c.24 0 .4.06.4.3 0 .27-.16.32-.4.32v1.75c.24 0 .4.03.4.27 0 .33-.16.38-.4.38v1.75c0 .88.72 1.63 1.6 1.63h5.2c.88 0 1.6-.76 1.6-1.63v-1.75c-.24 0-.4-.05-.4-.38 0-.24.16-.27.4-.27v-1.75c-.24 0-.4-.05-.4-.32.01-.24.17-.3.4-.3zm-7.33-4.6c0 .35.07.69.18 1h2.95v-1.39c-.84.29-1.49.47-2.22.68-.52.16-.91-.43-.91-.29zm.91 3.92h2.96v-2.3H9.78v2.3zm3.36-3.36v-1.16c-.53.21-1.04.4-1.52.58.86-.06 1.52.37 1.52.58z"/>
+          </svg>
+        </div>
+        <div class="product-content">
+          <h3 class="product-title">Classic Bread</h3>
+          <div class="product-price">₱120.00</div>
+          <p class="product-description">Our signature bread made with premium ingredients and baked to perfection.</p>
+          <a href="{% url 'bakeshop:menu' %}" class="btn btn-primary">View Menu</a>
+        </div>
+      </div>
+      <div class="product-card">
+        <div class="product-img no-image">
+          <svg width="80" height="80" viewBox="0 0 24 24" fill="#0a2463">
+            <path d="M12 6c1.11 0 2-.9 2-2 0-1.11-.9-2-2-2-1.11 0-2 .9-2 2 0 1.1.9 2 2 2zm4.2 9.2v-2.5c0-.88-.72-1.62-1.6-1.62h-5.2c-.88 0-1.6.74-1.6 1.62v2.5c.24 0 .4.06.4.3 0 .27-.16.32-.4.32v1.75c.24 0 .4.03.4.27 0 .33-.16.38-.4.38v1.75c0 .88.72 1.63 1.6 1.63h5.2c.88 0 1.6-.76 1.6-1.63v-1.75c-.24 0-.4-.05-.4-.38 0-.24.16-.27.4-.27v-1.75c-.24 0-.4-.05-.4-.32.01-.24.17-.3.4-.3z"/>
+          </svg>
+        </div>
+        <div class="product-content">
+          <h3 class="product-title">Chocolate Cake</h3>
+          <div class="product-price">₱350.00</div>
+          <p class="product-description">Rich and moist chocolate cake with premium cocoa and a velvety ganache.</p>
+          <a href="{% url 'bakeshop:menu' %}" class="btn btn-primary">View Menu</a>
+        </div>
+      </div>
+      <div class="product-card">
+        <div class="product-img no-image">
+          <svg width="80" height="80" viewBox="0 0 24 24" fill="#0a2463">
+            <path d="M12 6c1.11 0 2-.9 2-2 0-1.11-.9-2-2-2-1.11 0-2 .9-2 2 0 1.1.9 2 2 2zm4.2 9.2v-2.5c0-.88-.72-1.62-1.6-1.62h-5.2c-.88 0-1.6.74-1.6 1.62v2.5c.24 0 .4.06.4.3 0 .27-.16.32-.4.32v1.75c.24 0 .4.03.4.27 0 .33-.16.38-.4.38v1.75c0 .88.72 1.63 1.6 1.63h5.2c.88 0 1.6-.76 1.6-1.63v-1.75c-.24 0-.4-.05-.4-.38 0-.24.16-.27.4-.27v-1.75c-.24 0-.4-.05-.4-.32.01-.24.17-.3.4-.3z"/>
+          </svg>
+        </div>
+        <div class="product-content">
+          <h3 class="product-title">Cheese Ensaimada</h3>
+          <div class="product-price">₱95.00</div>
+          <p class="product-description">Soft and fluffy pastry topped with butter, sugar, and premium cheese.</p>
+          <a href="{% url 'bakeshop:menu' %}" class="btn btn-primary">View Menu</a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    
+    <div class="text-center mt-5">
+      <a href="{% url 'bakeshop:menu' %}" class="btn btn-primary">View All Products</a>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- About Section -->
+{% if sections.about %}
+<section class="about-section">
+  <div class="container">
+    <div class="about-content">
+      <div class="about-image">
+        <div class="about-image-wrapper {% if not sections.about.image %}no-image{% endif %}">
+          {% if sections.about.image %}
+          <img src="{{ sections.about.image.url }}" alt="{{ sections.about.title }}">
+          {% else %}
+          <svg width="120" height="120" viewBox="0 0 24 24" fill="#0a2463">
+            <path d="M3 5v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2zm16 14H5V5h14v14zm-5.04-6.71l-2.75 3.54-1.96-2.36L6.5 17h11l-3.54-4.71z"/>
+          </svg>
+          {% endif %}
+        </div>
+      </div>
+      
+      <div class="about-text">
+        <h2>{{ sections.about.title }}</h2>
+        {{ sections.about.content|safe|truncatewords_html:75 }}
+        <a href="{% url 'bakeshop:about' %}" class="btn btn-primary">Read More</a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- Testimonial Section -->
+<section class="testimonial-section">
+  <div class="container">
+    <div class="section-title">
+      <h2>What Our Customers Say</h2>
+      <p>Hear from our valued customers about their experience with {{ site_settings.site_name }}</p>
+    </div>
+    
+    <div class="testimonial-slider">
+      {% if testimonials %}
+        {% for testimonial in testimonials %}
+        <div class="testimonial-slide {% if forloop.first %}active{% endif %}">
+          <div class="testimonial-content">
+            {{ testimonial.testimonial }}
+          </div>
+          <div class="testimonial-author">
+            <div class="author-image {% if not testimonial.image %}no-image{% endif %}">
+              {% if testimonial.image %}
+              <img src="{{ testimonial.image.url }}" alt="{{ testimonial.name }}">
+              {% else %}
+              <svg width="30" height="30" viewBox="0 0 24 24" fill="#0a2463">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
+              </svg>
+              {% endif %}
+            </div>
+            <div class="author-info">
+              <h4>{{ testimonial.name }}</h4>
+              <p>{{ testimonial.location }} • {{ testimonial.years_as_franchisee }} years</p>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      {% else %}
+        <!-- Default testimonials if none are available -->
+        <div class="testimonial-slide active">
+          <div class="testimonial-content">
+            "The pastries at {{ site_settings.site_name }} are absolutely incredible! I've been a loyal customer for years and the quality and taste have never disappointed me. Their chocolate cake is to die for!"
+          </div>
+          <div class="testimonial-author">
+            <div class="author-image no-image">
+              <svg width="30" height="30" viewBox="0 0 24 24" fill="#0a2463">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
+              </svg>
+            </div>
+            <div class="author-info">
+              <h4>Maria Santos</h4>
+              <p>Regular Customer • 3 years</p>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-slide">
+          <div class="testimonial-content">
+            "As someone with dietary restrictions, I appreciate that {{ site_settings.site_name }} offers gluten-free options that actually taste amazing. Their service is always friendly, and the atmosphere is so inviting!"
+          </div>
+          <div class="testimonial-author">
+            <div class="author-image no-image">
+              <svg width="30" height="30" viewBox="0 0 24 24" fill="#0a2463">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
+              </svg>
+            </div>
+            <div class="author-info">
+              <h4>John Reyes</h4>
+              <p>Weekly Customer • 2 years</p>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-slide">
+          <div class="testimonial-content">
+            "I ordered a custom cake for my daughter's birthday, and it exceeded all my expectations! Not only was it beautiful, but it tasted fantastic too. Everyone at the party was asking where I got it from!"
+          </div>
+          <div class="testimonial-author">
+            <div class="author-image no-image">
+              <svg width="30" height="30" viewBox="0 0 24 24" fill="#0a2463">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
+              </svg>
+            </div>
+            <div class="author-info">
+              <h4>Anna Cruz</h4>
+              <p>Loyal Customer • 5 years</p>
+            </div>
+          </div>
+        </div>
+      {% endif %}
+      
+      <!-- Testimonial Navigation Dots -->
+      <div class="testimonial-dots">
+        {% if testimonials %}
+          {% for testimonial in testimonials %}
+          <div class="testimonial-dot {% if forloop.first %}active{% endif %}"></div>
+          {% endfor %}
+        {% else %}
+          <div class="testimonial-dot active"></div>
+          <div class="testimonial-dot"></div>
+          <div class="testimonial-dot"></div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Stats Section -->
+<section class="stats-section">
+  <div class="container">
+    {% if stats %}
+      <div class="stats-container">
+        {% for stat in stats %}
+          <div class="stat-item">
+            <div class="stat-icon">
+              <i class="fas fa-{{ stat.icon|default:'chart-bar' }}"></i>
+            </div>
+            <div class="stat-value">{{ stat.value }}</div>
+            <div class="stat-label">{{ stat.label }}</div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <!-- Default stats if none are available -->
+      <div class="stats-container">
+        <div class="stat-item">
+          <div class="stat-icon">
+            <i class="fas fa-store"></i>
+          </div>
+          <div class="stat-value">25+</div>
+          <div class="stat-label">Branches Nationwide</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-icon">
+            <i class="fas fa-birthday-cake"></i>
+          </div>
+          <div class="stat-value">100+</div>
+          <div class="stat-label">Pastry Varieties</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-icon">
+            <i class="fas fa-users"></i>
+          </div>
+          <div class="stat-value">50,000+</div>
+          <div class="stat-label">Happy Customers</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-icon">
+            <i class="fas fa-award"></i>
+          </div>
+          <div class="stat-value">15+</div>
+          <div class="stat-label">Years of Excellence</div>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+<!-- Special Offers Section -->
+{% if special_offers %}
+<section class="offers-section">
+  <div class="container">
+    <div class="section-title">
+      <h2>Special Offers</h2>
+      <p>Enjoy these limited-time offers from {{ site_settings.site_name }}</p>
+    </div>
+    
+    <div class="offer-grid">
+      {% for offer in special_offers %}
+        <div class="offer-card">
+          <div class="offer-img {% if not offer.image %}no-image{% endif %}">
+            {% if offer.image %}
+            <img src="{{ offer.image.url }}" alt="{{ offer.title }}">
+            {% else %}
+            <svg width="80" height="80" viewBox="0 0 24 24" fill="#0a2463">
+              <path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/>
+            </svg>
+            {% endif %}
+            {% if offer.discount_percentage %}
+            <div class="offer-badge">{{ offer.discount_percentage }}% OFF</div>
+            {% endif %}
+          </div>
+          <div class="offer-content">
+            <h3 class="offer-title">{{ offer.title }}</h3>
+            <p class="offer-description">{{ offer.description|truncatechars:100 }}</p>
+            <p class="offer-expiry">Valid until: {{ offer.expiry_date|date:"F d, Y" }}</p>
+            <a href="{% url 'bakeshop:menu' %}" class="btn btn-primary">View Details</a>
+          </div>
+        </div>
+      {% empty %}
+        <!-- Display default offers if none available -->
+        <div class="offer-card">
+          <div class="offer-img no-image">
+            <svg width="80" height="80" viewBox="0 0 24 24" fill="#0a2463">
+              <path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/>
+            </svg>
+            <div class="offer-badge">20% OFF</div>
+          </div>
+          <div class="offer-content">
+            <h3 class="offer-title">Weekend Special</h3>
+            <p class="offer-description">Enjoy 20% off on all pastries every weekend! Perfect opportunity to treat your family.</p>
+            <p class="offer-expiry">Valid until: December 31, 2025</p>
+            <a href="{% url 'bakeshop:menu' %}" class="btn btn-primary">View Details</a>
+          </div>
+        </div>
+        <div class="offer-card">
+          <div class="offer-img no-image">
+            <svg width="80" height="80" viewBox="0 0 24 24" fill="#0a2463">
+              <path d="M12 6c1.11 0 2-.9 2-2 0-1.11-.9-2-2-2-1.11 0-2 .9-2 2 0 1.1.9 2 2 2zm4.2 9.2v-2.5c0-.88-.72-1.62-1.6-1.62h-5.2c-.88 0-1.6.74-1.6 1.62v2.5c.24 0 .4.06.4.3 0 .27-.16.32-.4.32v1.75c.24 0 .4.03.4.27 0 .33-.16.38-.4.38v1.75c0 .88.72 1.63 1.6 1.63h5.2c.88 0 1.6-.76 1.6-1.63v-1.75c-.24 0-.4-.05-.4-.38 0-.24.16-.27.4-.27v-1.75c-.24 0-.4-.05-.4-.32.01-.24.17-.3.4-.3z"/>
+            </svg>
+            <div class="offer-badge">Free</div>
+          </div>
+          <div class="offer-content">
+            <h3 class="offer-title">Buy 3 Get 1 Free</h3>
+            <p class="offer-description">Purchase any 3 pastries and get 1 coffee absolutely free! Perfect for your morning treat.</p>
+            <p class="offer-expiry">Valid until: November 30, 2025</p>
+            <a href="{% url 'bakeshop:menu' %}" class="btn btn-primary">View Details</a>
+          </div>
+        </div>
+        <div class="offer-card">
+          <div class="offer-img no-image">
+            <svg width="80" height="80" viewBox="0 0 24 24" fill="#0a2463">
+              <path d="M12 2l-5.5 9h11L12 2zm0 3.84L13.93 9h-3.87L12 5.84zM17.5 13c-2.49 0-4.5 2.01-4.5 4.5s2.01 4.5 4.5 4.5 4.5-2.01 4.5-4.5-2.01-4.5-4.5-4.5zm0 7c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5zM3 21.5h8v-8H3v8zm2-6h4v4H5v-4z"/>
+            </svg>
+            <div class="offer-badge">30% OFF</div>
+          </div>
+          <div class="offer-content">
+            <h3 class="offer-title">Birthday Special</h3>
+            <p class="offer-description">Celebrate your special day with us! Get 30% off on any birthday cake order made 3 days in advance.</p>
+            <p class="offer-expiry">Valid until: December 31, 2025</p>
+            <a href="{% url 'bakeshop:menu' %}" class="btn btn-primary">View Details</a>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- Locations Section -->
+<section class="locations-section">
+  <div class="container">
+    <div class="section-title">
+      <h2>Our Locations</h2>
+      <p>Find the nearest {{ site_settings.site_name }} branch in your area</p>
+    </div>
+    
+    {% if locations %}
+      <div class="location-grid">
+        {% for location in locations %}
+          {% if location.is_featured %}
+            <div class="location-card">
+              <div class="location-img {% if not location.image %}no-image{% endif %}">
+                {% if location.image %}
+                <img src="{{ location.image.url }}" alt="{{ location.name }}">
+                {% else %}
+                <svg width="80" height="80" viewBox="0 0 24 24" fill="#0a2463">
+                  <path d="M12 2C8.14 2 5 5.14 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.14-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                </svg>
+                {% endif %}
+              </div>
+              <div class="location-content">
+                <h3 class="location-name">{{ location.name }}</h3>
+                <p class="location-address">{{ location.address }}<br>{{ location.city }}, {{ location.state }}</p>
+                <p class="location-phone"><i class="fas fa-phone"></i> {{ location.phone }}</p>
+                <p class="location-hours">
+                  {% if location.is_24hours %}
+                    <strong>Open 24 Hours</strong>
+                  {% else %}
+                    <strong>Today:</strong> 
+                    {% now "l"|lower as current_day %}
+                    {% if current_day == 'monday' %}
+                      {{ location.monday_hours|default:"9:00 AM - 9:00 PM" }}
+                    {% elif current_day == 'tuesday' %}
+                      {{ location.tuesday_hours|default:"9:00 AM - 9:00 PM" }}
+                    {% elif current_day == 'wednesday' %}
+                      {{ location.wednesday_hours|default:"9:00 AM - 9:00 PM" }}
+                    {% elif current_day == 'thursday' %}
+                      {{ location.thursday_hours|default:"9:00 AM - 9:00 PM" }}
+                    {% elif current_day == 'friday' %}
+                      {{ location.friday_hours|default:"9:00 AM - 9:00 PM" }}
+                    {% elif current_day == 'saturday' %}
+                      {{ location.saturday_hours|default:"9:00 AM - 9:00 PM" }}
+                    {% elif current_day == 'sunday' %}
+                      {{ location.sunday_hours|default:"9:00 AM - 9:00 PM" }}
+                    {% endif %}
+                  {% endif %}
+                </p>
+                <a href="{% url 'bakeshop:location_detail' location.id %}" class="btn btn-primary">View Details</a>
+              </div>
+            </div>
+          {% endif %}
+        {% endfor %}
+        
+        {% if locations|length < 3 %}
+          <!-- Add more location cards if we have fewer than 3 featured locations -->
+          {% for i in "123"|make_list %}
+            {% if forloop.counter <= 3|add:"-"|add:locations|length %}
+              <div class="location-card">
+                <div class="location-img no-image">
+                  <svg width="80" height="80" viewBox="0 0 24 24" fill="#0a2463">
+                    <path d="M12 2C8.14 2 5 5.14 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.14-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                  </svg>
+                </div>
+                <div class="location-content">
+                  <h3 class="location-name">{{ site_settings.site_name }} - {% if forloop.counter == 1 %}Main Branch{% elif forloop.counter == 2 %}Tarlac City{% else %}SM Shopping Mall{% endif %}</h3>
+                  <p class="location-address">123 Bakery Street<br>Tarlac City, Central Luzon</p>
+                  <p class="location-phone"><i class="fas fa-phone"></i> (+63) 945-123-4567</p>
+                  <p class="location-hours"><strong>Today:</strong> 9:00 AM - 9:00 PM</p>
+                  <a href="{% url 'bakeshop:location' %}" class="btn btn-primary">View Details</a>
+                </div>
+              </div>
+            {% endif %}
+          {% endfor %}
+        {% endif %}
+      </div>
+    {% else %}
+      <!-- Default location cards if none are available -->
+      <div class="location-grid">
+        <div class="location-card">
+          <div class="location-img no-image">
+            <svg width="80" height="80" viewBox="0 0 24 24" fill="#0a2463">
+              <path d="M12 2C8.14 2 5 5.14 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.14-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+            </svg>
+          </div>
+          <div class="location-content">
+            <h3 class="location-name">{{ site_settings.site_name }} - Main Branch</h3>
+            <p class="location-address">123 Bakery Street<br>Tarlac City, Central Luzon</p>
+            <p class="location-phone"><i class="fas fa-phone"></i> (+63) 945-123-4567</p>
+            <p class="location-hours"><strong>Today:</strong> 9:00 AM - 9:00 PM</p>
+            <a href="{% url 'bakeshop:location' %}" class="btn btn-primary">View Details</a>
+          </div>
+        </div>
+        <div class="location-card">
+          <div class="location-img no-image">
+            <svg width="80" height="80" viewBox="0 0 24 24" fill="#0a2463">
+              <path d="M12 2C8.14 2 5 5.14 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.14-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+            </svg>
+          </div>
+          <div class="location-content">
+            <h3 class="location-name">{{ site_settings.site_name }} - SM Shopping Mall</h3>
+            <p class="location-address">2nd Floor, SM City Tarlac<br>Tarlac City, Central Luzon</p>
+            <p class="location-phone"><i class="fas fa-phone"></i> (+63) 945-987-6543</p>
+            <p class="location-hours"><strong>Today:</strong> 10:00 AM - 9:00 PM</p>
+            <a href="{% url 'bakeshop:location' %}" class="btn btn-primary">View Details</a>
+          </div>
+        </div>
+        <div class="location-card">
+          <div class="location-img no-image">
+            <svg width="80" height="80" viewBox="0 0 24 24" fill="#0a2463">
+              <path d="M12 2C8.14 2 5 5.14 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.14-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+            </svg>
+          </div>
+          <div class="location-content">
+            <h3 class="location-name">{{ site_settings.site_name }} - Express</h3>
+            <p class="location-address">456 Main Street<br>Gerona, Tarlac</p>
+            <p class="location-phone"><i class="fas fa-phone"></i> (+63) 945-456-7890</p>
+            <p class="location-hours"><strong>Today:</strong> 7:00 AM - 8:00 PM</p>
+            <a href="{% url 'bakeshop:location' %}" class="btn btn-primary">View Details</a>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+    
+    <div class="text-center mt-5">
+      <a href="{% url 'bakeshop:location' %}" class="btn btn-primary">View All Locations</a>
+    </div>
+  </div>
+</section>
+
+<!-- Franchise CTA Section -->
+<section class="franchise-cta">
+  <div class="container">
+    <div class="franchise-cta-content">
+      <h2>Own Your {{ site_settings.site_name }} Franchise Today!</h2>
+      <p>Join our growing family of successful franchisees and build a profitable business with our proven model. We offer comprehensive training, marketing support, and a recognized brand name.</p>
+      <a href="{% url 'bakeshop:franchise' %}" class="btn btn-secondary">Learn About Franchise Opportunities</a>
+    </div>
+  </div>
+</section>
+
+<!-- Newsletter Section -->
+<section class="newsletter-section">
+  <div class="container">
+    <div class="newsletter-content">
+      <h2>Subscribe to Our Newsletter</h2>
+      <p>Stay updated with our latest offers, new menu items, and special promotions. Subscribe now and get a special discount on your next purchase!</p>
+      <form class="newsletter-form">
+        <input type="email" placeholder="Your Email Address" required>
+        <button type="submit">Subscribe</button>
+      </form>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Banner Slideshow
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.banner-slide');
+    const dots = document.querySelectorAll('.banner-dot');
+    const totalSlides = slides.length;
+    
+    if (totalSlides > 0) {
+      // Auto slideshow
+      let slideInterval = setInterval(nextSlide, 6000);
+      
+      function showSlide(n) {
+        // Reset active class
+        slides.forEach(slide => slide.classList.remove('active'));
+        dots.forEach(dot => dot.classList.remove('active'));
+        
+        // Set current slide
+        currentSlide = (n + totalSlides) % totalSlides;
+        slides[currentSlide].classList.add('active');
+        dots[currentSlide].classList.add('active');
+        
+        // Reset timer
+        clearInterval(slideInterval);
+        slideInterval = setInterval(nextSlide, 6000);
+      }
+      
+      function nextSlide() {
+        showSlide(currentSlide + 1);
+      }
+      
+      function prevSlide() {
+        showSlide(currentSlide - 1);
+      }
+      
+      // Add click events to arrows
+      const prevBtn = document.querySelector('.banner-arrow.prev');
+      const nextBtn = document.querySelector('.banner-arrow.next');
+      
+      if (prevBtn) prevBtn.addEventListener('click', prevSlide);
+      if (nextBtn) nextBtn.addEventListener('click', nextSlide);
+      
+      // Add click events to dots
+      dots.forEach((dot, index) => {
+        dot.addEventListener('click', () => showSlide(index));
+      });
+    }
+    
+    // Testimonial Slider
+    let currentTestimonial = 0;
+    const testimonialSlides = document.querySelectorAll('.testimonial-slide');
+    const testimonialDots = document.querySelectorAll('.testimonial-dot');
+    const testimonialCount = testimonialSlides.length;
+    
+    if (testimonialCount > 0) {
+      // Auto testimonial rotation
+      let testimonialInterval = setInterval(nextTestimonial, 5000);
+      
+      function showTestimonial(n) {
+        // Reset active class
+        testimonialSlides.forEach(slide => slide.classList.remove('active'));
+        testimonialDots.forEach(dot => dot.classList.remove('active'));
+        
+        // Set current testimonial
+        currentTestimonial = (n + testimonialCount) % testimonialCount;
+        testimonialSlides[currentTestimonial].classList.add('active');
+        testimonialDots[currentTestimonial].classList.add('active');
+        
+        // Reset timer
+        clearInterval(testimonialInterval);
+        testimonialInterval = setInterval(nextTestimonial, 5000);
+      }
+      
+      function nextTestimonial() {
+        showTestimonial(currentTestimonial + 1);
+      }
+      
+      // Add click events to dots
+      testimonialDots.forEach((dot, index) => {
+        dot.addEventListener('click', () => showTestimonial(index));
+      });
+    }
+    
+    // Animate stats on scroll
+    const statValues = document.querySelectorAll('.stat-value');
+    let animated = false;
+    
+    function animateStats() {
+      if (animated) return;
+      
+      const statsSection = document.querySelector('.stats-section');
+      if (!statsSection) return;
+      
+      const position = statsSection.getBoundingClientRect();
+      
+      // If stats section is visible
+      if (position.top < window.innerHeight && position.bottom >= 0) {
+        statValues.forEach(value => {
+          const targetValue = value.textContent;
+          let currentValue = 0;
+          const duration = 2000; // 2 seconds
+          const startTime = Date.now();
+          
+          function updateValue() {
+            const elapsedTime = Date.now() - startTime;
+            const progress = Math.min(elapsedTime / duration, 1);
+            
+            if (targetValue.includes('%')) {
+              // For percentage values
+              const numValue = parseInt(targetValue);
+              currentValue = Math.floor(numValue * progress);
+              value.textContent = currentValue + '%';
+            } else if (targetValue.includes('+')) {
+              // For values with plus sign
+              const numValue = parseInt(targetValue);
+              currentValue = Math.floor(numValue * progress);
+              value.textContent = currentValue + '+';
+            } else if (!isNaN(parseInt(targetValue))) {
+              // For numeric values
+              const numValue = parseInt(targetValue);
+              currentValue = Math.floor(numValue * progress);
+              value.textContent = currentValue;
+            }
+            
+            if (progress < 1) {
+              requestAnimationFrame(updateValue);
+            }
+          }
+          
+          updateValue();
+        });
+        
+        animated = true;
+      }
+    }
+    
+    // Check on scroll
+    window.addEventListener('scroll', animateStats);
+    
+    // Check on load
+    animateStats();
+    
+    // Newsletter form submission (prevent page reload)
+    const newsletterForm = document.querySelector('.newsletter-form');
+    if (newsletterForm) {
+      newsletterForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const emailInput = this.querySelector('input[type="email"]');
+        if (!emailInput || !emailInput.value.trim()) return;
+        
+        // Show a success message
+        const successMessage = document.createElement('div');
+        successMessage.style.backgroundColor = '#4CAF50';
+        successMessage.style.color = 'white';
+        successMessage.style.padding = '10px';
+        successMessage.style.borderRadius = '5px';
+        successMessage.style.marginTop = '15px';
+        successMessage.textContent = 'Thank you for subscribing to our newsletter!';
+        
+        // Clear the input and append the message
+        emailInput.value = '';
+        newsletterForm.appendChild(successMessage);
+        
+        // Remove the message after 5 seconds
+        setTimeout(() => {
+          successMessage.remove();
+        }, 5000);
+      });
+    }
+  });
+</script>
+{% endblock %}

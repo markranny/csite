@@ -1,293 +1,316 @@
 {% extends 'bakeshop/base.html' %}
-{% load bakeshop_tags %}
 {% load static %}
 
-{% block title %}Careers - {{ site_settings.site_name }}{% endblock %}
-
-{% block extra_css %}
-
-{% endblock %}
-
 {% block content %}
-<!-- Hero Section -->
-<section class="career-hero" style="background-image: url('{% static 'images/career-bg.jpg' %}');">
-    <div class="career-hero-overlay"></div>
-    <div class="container">
-        <div class="career-hero-content">
-            <h1>Join Our Team</h1>
-            <p>Be part of a passionate team that crafts delicious moments and bakes memorable experiences</p>
+<div class="bg-white">
+    <!-- Career Page Hero Section -->
+    <section class="career-hero bg-navy-blue text-white py-20">
+        <div class="container mx-auto px-4 text-center">
+            {% if sections.intro %}
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">
+                {{ sections.intro.title }}
+            </h1>
+            <div class="text-xl max-w-3xl mx-auto prose text-white">
+                {{ sections.intro.content|safe }}
+            </div>
+            {% else %}
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">
+                Join Our Team
+            </h1>
+            <p class="text-xl">
+                Become part of a passionate and creative family
+            </p>
+            {% endif %}
         </div>
-    </div>
-</section>
+    </section>
 
-<!-- Introduction Section -->
-{% if sections.intro %}
-<section class="career-section">
-    <div class="container">
-        <div class="section-title">
-            <h2>{{ sections.intro.title }}</h2>
-        </div>
-        
-        <div class="intro-content">
-            {{ sections.intro.content|safe }}
-        </div>
-    </div>
-</section>
-{% endif %}
-
-<!-- Company Culture Section -->
-{% if sections.culture %}
-<section class="career-section culture-section">
-    <div class="container">
-        <div class="section-title">
-            <h2>{{ sections.culture.title }}</h2>
-        </div>
-        
-        <div class="row">
-            <div class="col-md-4">
-                <div class="culture-card">
-                    <h3>Passion for Excellence</h3>
-                    <p>We're committed to quality in everything we do, from the ingredients we select to the customer service we provide. We take pride in our work and always aim for the best.</p>
-                </div>
-            </div>
-            
-            <div class="col-md-4">
-                <div class="culture-card">
-                    <h3>Innovation & Creativity</h3>
-                    <p>We encourage creative thinking and fresh ideas. Our bakery is a place where traditional techniques meet innovative approaches to create unique, delightful products.</p>
-                </div>
-            </div>
-            
-            <div class="col-md-4">
-                <div class="culture-card">
-                    <h3>Teamwork & Collaboration</h3>
-                    <p>We believe in working together as a team, supporting each other, and celebrating our collective achievements. Strong relationships are at the heart of our success.</p>
-                </div>
-            </div>
-        </div>
-        
-        <div class="mt-4">
-            {{ sections.culture.content|safe }}
-        </div>
-    </div>
-</section>
-{% endif %}
-
-<!-- Benefits Section -->
-<section class="career-section">
-    <div class="container">
-        <div class="section-title">
-            <h2>Employee Benefits</h2>
-            <p>We value our team members and offer a range of benefits to support their well-being and growth</p>
-        </div>
-        
-        <div class="row">
-            {% for benefit in benefits %}
-            <div class="col-md-4">
-                <div class="benefit-card">
-                    <div class="benefit-icon">
-                        <i class="fas {{ benefit.icon }}"></i>
-                    </div>
-                    <h3>{{ benefit.title }}</h3>
-                    <p>{{ benefit.description }}</p>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-</section>
-
-<!-- Job Openings Section -->
-<section class="career-section">
-    <div class="container">
-        <div class="section-title">
-            <h2>Current Openings</h2>
-            <p>Explore exciting career opportunities at {{ site_settings.site_name }}</p>
-        </div>
-        
-        <div class="row">
-            <!-- Job Filters -->
-            <div class="col-lg-4">
-                <div class="job-filter">
-                    <h3>Filter Jobs</h3>
-                    <form action="{% url 'bakeshop:job_listings' %}" method="get">
-                        <div class="filter-group">
-                            <label for="category">Category</label>
-                            <select name="category" id="category" class="filter-select">
-                                <option value="">All Categories</option>
-                                {% for category in categories %}
-                                <option value="{{ category.id }}">{{ category.name }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        
-                        <div class="filter-group">
-                            <label for="keyword">Search</label>
-                            <input type="text" name="keyword" id="keyword" class="search-input" placeholder="Job title, skills, keywords...">
-                        </div>
-                        
-                        <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
-                    </form>
-                </div>
-            </div>
-            
-            <!-- Featured Jobs -->
-            <div class="col-lg-8">
-                <h3>Featured Positions</h3>
-                
-                {% for category in categories %}
-                {% with positions=category.positions.all|slice:":3" %}
-                {% if positions %}
-                <div class="job-category mb-4">
-                    <h4 class="category-name">{{ category.name }}</h4>
-                    
-                    {% for position in positions %}
-                    {% if position.is_active and position.is_featured %}
-                    <div class="job-card">
-                        <div class="job-title">
-                            <h3>{{ position.title }}</h3>
-                            <div class="job-badges">
-                                {{ position|job_badge }}
-                            </div>
-                        </div>
-                        
-                        <div class="job-details">
-                            <p><i class="fas fa-map-marker-alt"></i> {{ position.location }}</p>
-                            <p><i class="fas fa-briefcase"></i> {{ position.get_employment_type_display }}</p>
-                            {% if position.salary_range %}
-                            <p><i class="fas fa-money-bill-wave"></i> {{ position.salary_range }}</p>
-                            {% endif %}
-                        </div>
-                        
-                        <div class="job-description">
-                            {{ position.description|safe|truncatewords_html:30 }}
-                        </div>
-                        
-                        <a href="{% url 'bakeshop:job_detail' position.id %}" class="btn btn-primary">View Details</a>
-                    </div>
-                    {% endif %}
-                    {% endfor %}
-                </div>
+    <!-- Company Culture Section -->
+    {% if sections.culture %}
+    <section class="company-culture py-16">
+        <div class="container mx-auto px-4 flex flex-col md:flex-row items-center">
+            <div class="md:w-1/2 mb-8 md:mb-0 md:pr-8">
+                {% if sections.culture.image %}
+                <img src="{{ sections.culture.image.url }}" 
+                     alt="{{ sections.culture.title }}" 
+                     class="w-full rounded-lg shadow-lg object-cover h-96">
+                {% else %}
+                <svg class="w-full h-96 text-navy-blue" 
+                     fill="currentColor" 
+                     viewBox="0 0 100 100">
+                    <path d="M10 10 L90 10 L90 90 L10 90 Z M50 10 L50 90 M10 50 L90 50"/>
+                </svg>
                 {% endif %}
-                {% endwith %}
+            </div>
+            <div class="md:w-1/2">
+                <h2 class="text-3xl font-bold text-navy-blue mb-4">
+                    {{ sections.culture.title }}
+                </h2>
+                <div class="text-gray-700 prose">
+                    {{ sections.culture.content|safe }}
+                </div>
+            </div>
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- Benefits Section -->
+    {% if benefits or sections.benefits %}
+    <section class="benefits bg-gray-50 py-16">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-navy-blue text-center mb-12">
+                {{ sections.benefits.title|default:"Our Benefits" }}
+            </h2>
+            <div class="grid md:grid-cols-3 gap-8">
+                {% for benefit in benefits %}
+                <div class="bg-white rounded-lg shadow-md p-6 text-center transform transition hover:scale-105">
+                    <div class="mb-4">
+                        <i class="{{ benefit.icon }} text-navy-blue text-5xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-navy-blue mb-2">
+                        {{ benefit.title }}
+                    </h3>
+                    <p class="text-gray-700">
+                        {{ benefit.description }}
+                    </p>
+                </div>
                 {% endfor %}
                 
-                <div class="text-center mt-4">
-                    <a href="{% url 'bakeshop:job_listings' %}" class="btn btn-primary">View All Positions</a>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Application Process Section -->
-{% if process_steps %}
-<section class="career-section process-section">
-    <div class="container">
-        <div class="section-title">
-            <h2>Our Hiring Process</h2>
-            <p>What to expect when you apply for a position at {{ site_settings.site_name }}</p>
-        </div>
-        
-        <div class="process-steps">
-            {% for step in process_steps %}
-            <div class="process-step">
-                <div class="step-number">{{ step.step_number }}</div>
-                <div class="step-content">
-                    <h3>{{ step.title }}</h3>
-                    <p>{{ step.description }}</p>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-</section>
-{% endif %}
-
-<!-- Testimonials Section -->
-{% if testimonials %}
-<section class="career-section testimonial-section">
-    <div class="container">
-        <div class="section-title">
-            <h2>What Our Team Says</h2>
-            <p>Hear from the people who make {{ site_settings.site_name }} special</p>
-        </div>
-        
-        <div class="row">
-            {% for testimonial in testimonials %}
-            <div class="col-md-6">
-                <div class="testimonial-card">
-                    <div class="testimonial-header">
-                        <div class="testimonial-image">
-                            <img src="{{ testimonial.image.url }}" alt="{{ testimonial.name }}">
-                        </div>
-                        <div class="testimonial-info">
-                            <h3>{{ testimonial.name }}</h3>
-                            <p>{{ testimonial.position }} | {{ testimonial.years_at_company }} years</p>
-                        </div>
-                    </div>
-                    <div class="testimonial-content">
-                        {{ testimonial.testimonial }}
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-</section>
-{% endif %}
-
-<!-- Career Growth Section -->
-{% if sections.growth %}
-<section class="career-section">
-    <div class="container">
-        <div class="section-title">
-            <h2>{{ sections.growth.title }}</h2>
-        </div>
-        
-        <div class="row">
-            <div class="col-lg-6">
-                <div class="growth-content">
-                    {{ sections.growth.content|safe }}
-                </div>
-            </div>
-            
-            <div class="col-lg-6">
-                {% if gallery_images %}
-                <div class="growth-gallery">
-                    <div class="row">
-                        {% for image in gallery_images %}
-                        <div class="col-md-6 mb-4">
-                            <div class="gallery-item">
-                                <img src="{{ image.image.url }}" alt="{{ image.title }}" class="img-fluid rounded">
-                            </div>
-                        </div>
-                        {% endfor %}
-                    </div>
+                {% if sections.benefits %}
+                <div class="md:col-span-3 text-center prose text-gray-700">
+                    {{ sections.benefits.content|safe }}
                 </div>
                 {% endif %}
             </div>
         </div>
-    </div>
-</section>
-{% endif %}
+    </section>
+    {% endif %}
 
-<!-- Apply Now Section -->
-<section class="apply-section">
-    <div class="container">
-        <div class="apply-content">
-            <h2>Ready to Join Our Team?</h2>
-            <p>Take the first step towards a rewarding career at {{ site_settings.site_name }}. Browse our open positions and apply today!</p>
-            <a href="{% url 'bakeshop:job_listings' %}" class="btn btn-primary btn-lg">Explore Job Openings</a>
+    <!-- Career Growth Section -->
+    {% if sections.growth %}
+    <section class="career-growth py-16">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-3xl font-bold text-navy-blue mb-8">
+                {{ sections.growth.title }}
+            </h2>
+            <div class="max-w-3xl mx-auto text-gray-700 prose">
+                {{ sections.growth.content|safe }}
+            </div>
         </div>
-    </div>
-</section>
+    </section>
+    {% endif %}
+
+    <!-- Hiring Process -->
+    {% if process_steps %}
+    <section class="hiring-process bg-gray-50 py-16">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-navy-blue text-center mb-12">
+                Our Hiring Process
+            </h2>
+            <div class="relative">
+                <div class="absolute left-1/2 top-0 bottom-0 w-1 bg-navy-blue transform -translate-x-1/2"></div>
+                {% for step in process_steps %}
+                <div class="mb-8 flex {% if forloop.counter|divisibleby:2 %}flex-row-reverse{% endif %}">
+                    <div class="w-1/2 {% if forloop.counter|divisibleby:2 %}pl-8{% else %}pr-8{% endif %}">
+                        <div class="bg-white rounded-lg shadow-md p-6">
+                            <div class="flex items-center mb-4">
+                                {% if step.icon %}
+                                <i class="{{ step.icon }} text-navy-blue text-3xl mr-4"></i>
+                                {% endif %}
+                                <h3 class="text-2xl font-bold text-navy-blue">
+                                    Step {{ step.step_number }}
+                                </h3>
+                            </div>
+                            <h4 class="text-xl font-semibold text-gray-800 mb-2">
+                                {{ step.title }}
+                            </h4>
+                            <p class="text-gray-700">
+                                {{ step.description }}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="w-1/2 flex items-center justify-center relative">
+                        <div class="w-8 h-8 bg-navy-blue rounded-full absolute z-10"></div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- Employee Testimonials -->
+    {% if testimonials %}
+    <section class="employee-testimonials py-16">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-navy-blue text-center mb-12">
+                Our Team Speaks
+            </h2>
+            <div class="grid md:grid-cols-3 gap-8">
+                {% for testimonial in testimonials %}
+                <div class="bg-white rounded-lg shadow-md p-6 text-center transform transition hover:scale-105">
+                    {% if testimonial.image %}
+                    <img src="{{ testimonial.image.url }}" 
+                         alt="{{ testimonial.name }}" 
+                         class="w-32 h-32 rounded-full object-cover mx-auto mb-4">
+                    {% else %}
+                    <svg class="w-32 h-32 rounded-full mx-auto mb-4 text-navy-blue" 
+                         fill="currentColor" 
+                         viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="40" />
+                    </svg>
+                    {% endif %}
+                    <h3 class="text-xl font-semibold text-navy-blue mb-2">
+                        {{ testimonial.name }}
+                    </h3>
+                    <p class="text-gray-600 mb-2">
+                        {{ testimonial.position }} ({{ testimonial.years_at_company }} years)
+                    </p>
+                    <p class="text-gray-700 italic">
+                        "{{ testimonial.testimonial }}"
+                    </p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- Job Categories and Listings -->
+    <section class="job-listings bg-gray-50 py-16">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-navy-blue text-center mb-12">
+                Current Openings
+            </h2>
+
+            <!-- Job Categories Filter -->
+            <div class="flex flex-wrap justify-center gap-4 mb-8">
+                <a href="{% url 'bakeshop:job_listings' %}" 
+                   class="btn {% if not selected_category %}btn-primary{% else %}btn-outline{% endif %} px-4 py-2 rounded-full">
+                    All Positions
+                </a>
+                {% for category in categories %}
+                <a href="{% url 'bakeshop:job_listings' %}?category={{ category.id }}" 
+                   class="btn {% if selected_category == category.id %}btn-primary{% else %}btn-outline{% endif %} px-4 py-2 rounded-full">
+                    {{ category.name }} ({{ category.position_count }})
+                </a>
+                {% endfor %}
+            </div>
+
+            <!-- Job Search -->
+            <form method="get" class="max-w-lg mx-auto mb-8">
+                <div class="flex">
+                    <input type="text" 
+                           name="keyword" 
+                           placeholder="Search job titles or keywords" 
+                           value="{{ keyword }}"
+                           class="flex-grow px-4 py-2 border rounded-l-full">
+                    <button type="submit" 
+                            class="btn bg-navy-blue text-white px-6 py-2 rounded-r-full hover:bg-navy-600 transition">
+                        Search
+                    </button>
+                </div>
+            </form>
+
+            <!-- Job Listings -->
+            {% if categories %}
+            <div class="space-y-6">
+                {% for category in categories %}
+                    {% with positions=category.positions.all|slice:":3" %}
+                    {% if positions %}
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h3 class="text-2xl font-bold text-navy-blue mb-6">
+                            {{ category.name }}
+                        </h3>
+                        <div class="grid md:grid-cols-3 gap-6">
+                            {% for job in positions %}
+                            <div class="border rounded-lg p-4 hover:shadow-md transition">
+                                <h4 class="text-xl font-semibold text-navy-blue mb-2">
+                                    {{ job.title }}
+                                </h4>
+                                <div class="flex justify-between mb-2">
+                                    <span class="text-gray-600">
+                                        {{ job.location }}
+                                    </span>
+                                    <span class="badge 
+                                        {% if job.is_urgent %}bg-red-500 text-white{% else %}bg-green-500 text-white{% endif %} 
+                                        px-2 py-1 rounded-full text-xs">
+                                        {{ job.get_employment_type_display }}
+                                    </span>
+                                </div>
+                                <p class="text-gray-700 mb-4">
+                                    {{ job.description|striptags|truncatechars:150 }}
+                                </p>
+                                <a href="{% url 'bakeshop:job_detail' job.id %}" 
+                                   class="btn bg-navy-blue text-white px-4 py-2 rounded-full hover:bg-navy-600 transition">
+                                    View Details
+                                </a>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% if category.positions.count > 3 %}
+                        <div class="text-center mt-6">
+                            <a href="{% url 'bakeshop:job_listings' %}?category={{ category.id }}" 
+                               class="btn btn-outline px-6 py-2 rounded-full">
+                                View All {{ category.name }} Positions
+                            </a>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                    {% endwith %}
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="text-center text-gray-500">
+                <p class="text-xl mb-4">No job openings at the moment</p>
+                <p>Check back soon or sign up for job alerts!</p>
+            </div>
+            {% endif %}
+        </div>
+    </section>
+
+    <!-- Call to Action -->
+    <section class="cta bg-navy-blue text-white py-16">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-3xl font-bold mb-4">
+                Ready to Start Your Career?
+            </h2>
+            <p class="text-xl mb-8">
+                Join our team and be part of something extraordinary
+            </p>
+            <a href="{% url 'bakeshop:job_listings' %}" 
+               class="btn bg-white text-navy-blue px-8 py-3 rounded-full hover:bg-gray-100 transition text-lg">
+                View Open Positions
+            </a>
+        </div>
+    </section>
+</div>
 {% endblock %}
 
 {% block extra_js %}
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Add any interactive elements here if needed
+document.addEventListener('DOMContentLoaded', function() {
+    // Category and job search interactions
+    const categoryButtons = document.querySelectorAll('.btn-category');
+    const jobSearchForm = document.querySelector('form');
+
+    categoryButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            categoryButtons.forEach(btn => btn.classList.remove('btn-primary'));
+            this.classList.add('btn-primary');
+        });
     });
+
+    // Optional: Add hover effect to job listings
+    const jobCards = document.querySelectorAll('.job-card');
+    jobCards.forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            this.classList.add('shadow-xl');
+        });
+        card.addEventListener('mouseleave', function() {
+            this.classList.remove('shadow-xl');
+        });
+    });
+});
 </script>
 {% endblock %}

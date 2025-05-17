@@ -1,785 +1,250 @@
 {% extends 'bakeshop/base.html' %}
-{% load bakeshop_tags %}
 {% load static %}
 
-{% block title %}About Us - {{ site_settings.site_name }}{% endblock %}
-
-{% block extra_css %}
-<style>
-  /* About page specific styles */
-  .about-hero {
-    padding: 150px 0;
-    background-size: cover;
-    background-position: center;
-    position: relative;
-    color: #fff;
-    text-align: center;
-  }
-
-  .about-hero-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-  }
-
-  .about-hero-content {
-    position: relative;
-    z-index: 1;
-  }
-
-  .about-hero-content h1 {
-    font-size: 42px;
-    margin-bottom: 15px;
-    font-weight: 700;
-  }
-
-  .about-hero-content p {
-    font-size: 18px;
-    max-width: 700px;
-    margin: 0 auto;
-  }
-
-  .about-section {
-    padding: 80px 0;
-  }
-
-  .about-section:nth-child(even) {
-    background-color: #f9f5f0;
-  }
-
-  .section-title {
-    text-align: center;
-    margin-bottom: 50px;
-    position: relative;
-  }
-
-  .section-title h2 {
-    font-size: 36px;
-    margin-bottom: 20px;
-    position: relative;
-    padding-bottom: 15px;
-  }
-
-  .section-title h2:after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 80px;
-    height: 3px;
-    background: #8c5e17;
-    display: block;
-  }
-
-  .section-title p {
-    color: #666;
-    max-width: 700px;
-    margin: 0 auto;
-  }
-
-  .story-image {
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-  }
-
-  .story-image img {
-    width: 100%;
-    height: auto;
-    transition: transform 0.5s ease;
-  }
-
-  .story-image:hover img {
-    transform: scale(1.05);
-  }
-
-  .story-content {
-    padding: 20px;
-  }
-
-  .values-section {
-    text-align: center;
-  }
-
-  .value-card {
-    background-color: #fff;
-    border-radius: 10px;
-    padding: 30px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-    height: 100%;
-    transition: all 0.3s ease;
-  }
-
-  .value-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
-  }
-
-  .value-icon {
-    width: 80px;
-    height: 80px;
-    margin: 0 auto 20px;
-    background-color: #8c5e17;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .value-icon i {
-    font-size: 36px;
-    color: #fff;
-  }
-
-  .value-card h3 {
-    font-size: 22px;
-    margin-bottom: 15px;
-  }
-
-  .values-content {
-    margin-top: 40px;
-  }
-
-  .mission-content {
-    text-align: center;
-    padding: 20px;
-  }
-
-  .team-member {
-    text-align: center;
-    margin-bottom: 40px;
-  }
-
-  .team-image {
-    width: 200px;
-    height: 200px;
-    border-radius: 50%;
-    overflow: hidden;
-    margin: 0 auto 20px;
-    border: 5px solid #8c5e17;
-  }
-
-  .team-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.5s ease;
-  }
-
-  .team-member:hover .team-image img {
-    transform: scale(1.1);
-  }
-
-  .team-member h3 {
-    font-size: 22px;
-    margin-bottom: 5px;
-  }
-
-  .team-member .position {
-    font-style: italic;
-    color: #8c5e17;
-    margin-bottom: 15px;
-  }
-
-  .awards-section {
-    background-color: #f9f5f0;
-  }
-
-  .award-card {
-    background-color: #fff;
-    border-radius: 10px;
-    padding: 30px;
-    text-align: center;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-    height: 100%;
-    transition: all 0.3s ease;
-    margin-bottom: 30px;
-  }
-
-  .award-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
-  }
-
-  .award-icon {
-    width: 80px;
-    height: 80px;
-    margin: 0 auto 20px;
-    background-color: #8c5e17;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .award-icon i {
-    font-size: 36px;
-    color: #fff;
-  }
-
-  .award-year {
-    font-size: 20px;
-    font-weight: 700;
-    color: #8c5e17;
-    margin-bottom: 10px;
-  }
-
-  .timeline-section {
-    position: relative;
-  }
-
-  .timeline {
-    position: relative;
-    padding: 40px 0;
-  }
-
-  .timeline::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 2px;
-    height: 100%;
-    background-color: #8c5e17;
-  }
-
-  .timeline-item {
-    margin-bottom: 70px;
-    position: relative;
-  }
-
-  .timeline-dot {
-    width: 20px;
-    height: 20px;
-    background-color: #8c5e17;
-    border-radius: 50%;
-    position: absolute;
-    top: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 2;
-  }
-
-  .timeline-year {
-    width: 120px;
-    height: 40px;
-    background-color: #8c5e17;
-    color: #fff;
-    text-align: center;
-    line-height: 40px;
-    border-radius: 20px;
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    font-weight: 700;
-  }
-
-  .timeline-content {
-    width: 45%;
-    background-color: #fff;
-    border-radius: 10px;
-    padding: 30px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-    margin-top: 60px;
-    transition: all 0.3s ease;
-  }
-  
-  .timeline-content:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
-  }
-
-  .timeline-item:nth-child(odd) .timeline-content {
-    margin-left: auto;
-  }
-
-  .gallery-item {
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-    cursor: pointer;
-    transition: all 0.3s ease;
-    margin-bottom: 30px;
-  }
-
-  .gallery-item:hover {
-    transform: scale(1.05);
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
-  }
-
-  /* Responsive styles */
-  @media (max-width: 992px) {
-    .about-hero-content h1 {
-      font-size: 36px;
-    }
-    
-    .section-title h2 {
-      font-size: 30px;
-    }
-    
-    .timeline::before {
-      left: 20px;
-    }
-    
-    .timeline-dot {
-      left: 20px;
-    }
-    
-    .timeline-year {
-      left: 90px;
-    }
-    
-    .timeline-content {
-      width: calc(100% - 120px);
-      margin-left: 120px !important;
-    }
-  }
-
-  @media (max-width: 768px) {
-    .about-hero-content h1 {
-      font-size: 32px;
-    }
-    
-    .about-hero-content p {
-      font-size: 16px;
-    }
-    
-    .team-image {
-      width: 150px;
-      height: 150px;
-    }
-  }
-
-  @media (max-width: 576px) {
-    .about-hero {
-      padding: 120px 0 80px;
-    }
-    
-    .about-hero-content h1 {
-      font-size: 28px;
-    }
-    
-    .section-title h2 {
-      font-size: 26px;
-    }
-    
-    .about-section {
-      padding: 60px 0;
-    }
-  }
-</style>
-{% endblock %}
-
 {% block content %}
-<!-- Hero Section -->
-<section class="about-hero" style="background-image: url('{% static 'images/about-bg.jpg' %}');">
-    <div class="about-hero-overlay"></div>
-    <div class="container">
-        <div class="about-hero-content">
-            <h1>Our Story</h1>
-            <p>Discover the passion behind ELJIN SUPERBAKESHOP and our commitment to quality baking since 1998</p>
+<div class="bg-white">
+    <!-- About Page Hero Section -->
+    <section class="about-hero bg-navy-blue text-white py-20">
+        <div class="container mx-auto px-4 text-center">
+            {% if sections.story %}
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">
+                {{ sections.story.title }}
+            </h1>
+            <p class="text-xl max-w-3xl mx-auto">
+                {{ sections.story.subtitle|default:"Our Journey, Our Passion" }}
+            </p>
+            {% else %}
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">
+                {{ site_settings.site_name }}
+            </h1>
+            <p class="text-xl">
+                {{ site_settings.site_tagline }}
+            </p>
+            {% endif %}
         </div>
-    </div>
-</section>
+    </section>
 
-<!-- Our Story Section -->
-{% if sections.story %}
-<section class="about-section">
-    <div class="container">
-        <div class="section-title">
-            <h2>{{ sections.story.title }}</h2>
-        </div>
-        
-        <div class="row align-items-center">
-            <div class="col-lg-6">
-                <div class="story-image">
-                    {% if sections.story.image %}
-                        <img src="{{ sections.story.image.url }}" alt="Our Story" id="storyImage">
+    <!-- About Sections Dynamic Rendering -->
+    {% for section_type, section in sections.items %}
+        {% if section_type == 'story' %}
+        <section class="our-story py-16">
+            <div class="container mx-auto px-4 flex flex-col md:flex-row items-center">
+                <div class="md:w-1/2 mb-8 md:mb-0 md:pr-8">
+                    {% if section.image %}
+                    <img src="{{ section.image.url }}" 
+                         alt="{{ section.title }}" 
+                         class="w-full rounded-lg shadow-lg object-cover h-96">
                     {% else %}
-                        <img src="{% static 'images/story.jpg' %}" alt="Our Story" id="storyImage">
+                    <svg class="w-full h-96 text-navy-blue" 
+                         fill="currentColor" 
+                         viewBox="0 0 100 100">
+                        <path d="M10 10 L90 10 L90 90 L10 90 Z M10 50 L90 50"/>
+                    </svg>
                     {% endif %}
                 </div>
-            </div>
-            <div class="col-lg-6">
-                <div class="story-content">
-                    {{ sections.story.content|safe }}
+                <div class="md:w-1/2">
+                    <h2 class="text-3xl font-bold text-navy-blue mb-4">
+                        {{ section.title }}
+                    </h2>
+                    <div class="text-gray-700 prose">
+                        {{ section.content|safe }}
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
-</section>
-{% endif %}
+        </section>
+        {% endif %}
 
-<!-- Core Values Section -->
-{% if sections.values %}
-<section class="about-section values-section">
-    <div class="container">
-        <div class="section-title">
-            <h2>{{ sections.values.title }}</h2>
-        </div>
-        
-        <div class="row">
-            <div class="col-md-4">
-                <div class="value-card" id="valueCard1">
-                    <div class="value-icon">
-                        <i class="fas fa-heart"></i>
-                    </div>
-                    <h3>Passion</h3>
-                    <p>We pour our hearts into every creation, ensuring each pastry is crafted with love and dedication.</p>
+        {% if section_type == 'mission' %}
+        <section class="mission-vision bg-gray-50 py-16">
+            <div class="container mx-auto px-4 text-center">
+                <h2 class="text-3xl font-bold text-navy-blue mb-8">
+                    {{ section.title }}
+                </h2>
+                <div class="max-w-3xl mx-auto text-gray-700 prose">
+                    {{ section.content|safe }}
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="value-card" id="valueCard2">
-                    <div class="value-icon">
-                        <i class="fas fa-check-circle"></i>
-                    </div>
-                    <h3>Quality</h3>
-                    <p>We use only premium ingredients and maintain high standards to deliver exceptional products.</p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="value-card" id="valueCard3">
-                    <div class="value-icon">
-                        <i class="fas fa-lightbulb"></i>
-                    </div>
-                    <h3>Innovation</h3>
-                    <p>We continuously explore new recipes and techniques to bring creative and delicious offerings to our customers.</p>
-                </div>
-            </div>
-        </div>
-        
-        <div class="row mt-4">
-            <div class="col-12">
-                <div class="values-content">
-                    {{ sections.values.content|safe }}
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-{% endif %}
+        </section>
+        {% endif %}
 
-<!-- Mission & Vision Section -->
-{% if sections.mission %}
-<section class="about-section">
-    <div class="container">
-        <div class="section-title">
-            <h2>{{ sections.mission.title }}</h2>
-        </div>
-        
-        <div class="row">
-            <div class="col-lg-10 mx-auto">
-                <div class="mission-content">
-                    {{ sections.mission.content|safe }}
+        {% if section_type == 'values' %}
+        <section class="core-values py-16">
+            <div class="container mx-auto px-4">
+                <h2 class="text-3xl font-bold text-navy-blue text-center mb-12">
+                    {{ section.title }}
+                </h2>
+                <div class="grid md:grid-cols-3 gap-8">
+                    {% with section.content|safe|split:"<li>" as values %}
+                        {% for value in values %}
+                            {% if value|trim %}
+                            <div class="bg-white rounded-lg shadow-md p-6 text-center transform transition hover:scale-105">
+                                <svg class="w-16 h-16 mx-auto mb-4 text-navy-blue" 
+                                     fill="currentColor" 
+                                     viewBox="0 0 100 100">
+                                    <circle cx="50" cy="50" r="40" />
+                                    <text x="50" y="55" text-anchor="middle" 
+                                          font-size="30" fill="white">
+                                        {{ forloop.counter }}
+                                    </text>
+                                </svg>
+                                <h3 class="text-xl font-semibold text-navy-blue mb-2">
+                                    {{ value|striptags|truncatechars:50 }}
+                                </h3>
+                            </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endwith %}
                 </div>
             </div>
-        </div>
-    </div>
-</section>
-{% endif %}
+        </section>
+        {% endif %}
+    {% endfor %}
 
-<!-- Team Section -->
-<section class="about-section">
-    <div class="container">
-        <div class="section-title">
-            <h2>Meet Our Team</h2>
-            <p>The talented people behind our delicious creations</p>
-        </div>
-        
-        <div class="row" id="teamContainer">
-            {% for member in team_members %}
-            <div class="col-md-4">
-                <div class="team-member">
-                    <div class="team-image">
-                        <img src="{{ member.image.url }}" alt="{{ member.name }}">
-                    </div>
-                    <h3>{{ member.name }}</h3>
-                    <p class="position">{{ member.position }}</p>
-                    <p class="bio">{{ member.bio|truncate_chars:150 }}</p>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-</section>
-
-<!-- Awards Section -->
-{% if awards %}
-<section class="about-section awards-section">
-    <div class="container">
-        <div class="section-title">
-            <h2>Our Achievements</h2>
-            <p>Recognition of our commitment to excellence</p>
-        </div>
-        
-        <div class="row">
-            {% for award in awards %}
-            <div class="col-md-4">
-                <div class="award-card">
-                    <div class="award-icon">
-                        <i class="fas fa-trophy"></i>
-                    </div>
-                    <div class="award-year">{{ award.year }}</div>
-                    <h3>{{ award.title }}</h3>
-                    <p>{{ award.organization }}</p>
-                    {% if award.description %}
-                    <p>{{ award.description|truncate_chars:100 }}</p>
+    <!-- Team Members Section -->
+    {% if team_members %}
+    <section class="team-members bg-gray-50 py-16">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-navy-blue text-center mb-12">
+                Our Team
+            </h2>
+            <div class="grid md:grid-cols-3 gap-8">
+                {% for member in team_members %}
+                <div class="bg-white rounded-lg shadow-md overflow-hidden transform transition hover:scale-105">
+                    {% if member.image %}
+                    <img src="{{ member.image.url }}" 
+                         alt="{{ member.name }}" 
+                         class="w-full h-64 object-cover">
+                    {% else %}
+                    <svg class="w-full h-64 text-navy-blue" 
+                         fill="currentColor" 
+                         viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="40" />
+                    </svg>
                     {% endif %}
+                    <div class="p-6 text-center">
+                        <h3 class="text-xl font-semibold text-navy-blue mb-2">
+                            {{ member.name }}
+                        </h3>
+                        <p class="text-gray-600 mb-4">
+                            {{ member.position }}
+                        </p>
+                        <p class="text-gray-700">
+                            {{ member.bio|truncatechars:150 }}
+                        </p>
+                    </div>
                 </div>
+                {% endfor %}
             </div>
-            {% endfor %}
         </div>
-    </div>
-</section>
-{% endif %}
+    </section>
+    {% endif %}
 
-<!-- Quality Commitment Section -->
-{% if sections.quality %}
-<section class="about-section values-section">
-    <div class="container">
-        <div class="section-title">
-            <h2>{{ sections.quality.title }}</h2>
-        </div>
-        
-        <div class="row">
-            <div class="col-lg-6 mx-auto">
-                <div class="quality-content">
-                    {{ sections.quality.content|safe }}
+    <!-- Awards and Recognitions -->
+    {% if awards %}
+    <section class="awards py-16">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-navy-blue text-center mb-12">
+                Awards & Recognitions
+            </h2>
+            <div class="grid md:grid-cols-3 gap-8">
+                {% for award in awards %}
+                <div class="bg-white rounded-lg shadow-md p-6 text-center transform transition hover:scale-105">
+                    {% if award.image %}
+                    <img src="{{ award.image.url }}" 
+                         alt="{{ award.title }}" 
+                         class="w-32 h-32 object-contain mx-auto mb-4">
+                    {% else %}
+                    <svg class="w-32 h-32 mx-auto mb-4 text-navy-blue" 
+                         fill="currentColor" 
+                         viewBox="0 0 100 100">
+                        <path d="M50 10 L70 40 L90 50 L70 60 L50 90 L30 60 L10 50 L30 40 Z"/>
+                    </svg>
+                    {% endif %}
+                    <h3 class="text-xl font-semibold text-navy-blue mb-2">
+                        {{ award.title }}
+                    </h3>
+                    <p class="text-gray-600 mb-2">
+                        {{ award.organization }} ({{ award.year }})
+                    </p>
+                    <p class="text-gray-700">
+                        {{ award.description|truncatechars:100 }}
+                    </p>
                 </div>
+                {% endfor %}
             </div>
         </div>
-    </div>
-</section>
-{% endif %}
+    </section>
+    {% endif %}
 
-<!-- Timeline Section -->
-{% if timeline_events %}
-<section class="about-section timeline-section">
-    <div class="container">
-        <div class="section-title">
-            <h2>Our Journey</h2>
-            <p>The milestones that shaped our bakery through the years</p>
-        </div>
-        
-        <div class="timeline" id="timeline">
-            {% for event in timeline_events %}
-            <div class="timeline-item">
-                <div class="timeline-dot"></div>
-                <div class="timeline-year">{{ event.year }}</div>
-                <div class="timeline-content">
-                    <h3>{{ event.title }}</h3>
-                    <p>{{ event.description }}</p>
+    <!-- Company Timeline -->
+    {% if timeline_events %}
+    <section class="company-timeline bg-gray-50 py-16">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-navy-blue text-center mb-12">
+                Our Journey
+            </h2>
+            <div class="relative">
+                <div class="absolute left-1/2 top-0 bottom-0 w-1 bg-navy-blue transform -translate-x-1/2"></div>
+                {% for event in timeline_events %}
+                <div class="mb-8 flex {% if forloop.counter|divisibleby:2 %}flex-row-reverse{% endif %}">
+                    <div class="w-1/2 {% if forloop.counter|divisibleby:2 %}pl-8{% else %}pr-8{% endif %}">
+                        <div class="bg-white rounded-lg shadow-md p-6">
+                            <h3 class="text-2xl font-bold text-navy-blue mb-2">
+                                {{ event.year }}
+                            </h3>
+                            <h4 class="text-xl font-semibold text-gray-800 mb-2">
+                                {{ event.title }}
+                            </h4>
+                            <p class="text-gray-700">
+                                {{ event.description }}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="w-1/2 flex items-center justify-center relative">
+                        <div class="w-8 h-8 bg-navy-blue rounded-full absolute z-10"></div>
+                    </div>
                 </div>
+                {% endfor %}
             </div>
-            {% endfor %}
         </div>
-    </div>
-</section>
-{% endif %}
+    </section>
+    {% endif %}
 
-<!-- Gallery Section -->
-{% if gallery_images %}
-<section class="about-section">
-    <div class="container">
-        <div class="section-title">
-            <h2>Photo Gallery</h2>
-            <p>A glimpse into our bakery world</p>
-        </div>
-        
-        <div class="row" id="galleryContainer">
-            {% for image in gallery_images %}
-            <div class="col-md-4 mb-4">
-                <div class="gallery-item">
-                    <img src="{{ image.image.url }}" alt="{{ image.title }}" class="img-fluid rounded">
+    <!-- Gallery Section -->
+    {% if gallery_images %}
+    <section class="photo-gallery py-16">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-navy-blue text-center mb-12">
+                Our Gallery
+            </h2>
+            <div class="grid md:grid-cols-3 gap-4">
+                {% for image in gallery_images %}
+                <div class="overflow-hidden rounded-lg shadow-md group">
+                    <img src="{{ image.image.url }}" 
+                         alt="{{ image.title }}" 
+                         class="w-full h-64 object-cover transform transition group-hover:scale-110">
                 </div>
+                {% endfor %}
             </div>
-            {% endfor %}
         </div>
-    </div>
-</section>
-{% endif %}
+    </section>
+    {% endif %}
+</div>
 {% endblock %}
 
 {% block extra_js %}
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Smooth scrolling for anchor links
-        const scrollLinks = document.querySelectorAll('.smooth-scroll');
-        for (const link of scrollLinks) {
-            link.addEventListener('click', function(e) {
-                e.preventDefault();
-                const targetId = this.getAttribute('href');
-                const targetElement = document.querySelector(targetId);
-                if (targetElement) {
-                    window.scrollTo({
-                        top: targetElement.offsetTop - 100,
-                        behavior: 'smooth'
-                    });
-                }
-            });
-        }
-
-        // Animate story image on scroll
-        const storyImage = document.getElementById('storyImage');
-        if (storyImage) {
-            window.addEventListener('scroll', function() {
-                const position = storyImage.getBoundingClientRect();
-                
-                // If element is visible in viewport
-                if(position.top < window.innerHeight && position.bottom >= 0) {
-                    storyImage.style.opacity = '1';
-                    storyImage.style.transform = 'scale(1)';
-                }
-            });
-            
-            // Set initial state
-            storyImage.style.opacity = '0.8';
-            storyImage.style.transform = 'scale(0.95)';
-            storyImage.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-            
-            // Trigger the check immediately
-            window.dispatchEvent(new Event('scroll'));
-        }
-
-        // Animate value cards with staggered delay
-        const valueCards = [
-            document.getElementById('valueCard1'),
-            document.getElementById('valueCard2'),
-            document.getElementById('valueCard3')
-        ];
-        
-        valueCards.forEach((card, index) => {
-            if (card) {
-                // Set initial states
-                card.style.opacity = '0';
-                card.style.transform = 'translateY(20px)';
-                card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-                
-                // Add intersection observer
-                const observer = new IntersectionObserver((entries) => {
-                    entries.forEach(entry => {
-                        if (entry.isIntersecting) {
-                            setTimeout(() => {
-                                card.style.opacity = '1';
-                                card.style.transform = 'translateY(0)';
-                            }, 200 * index); // Staggered animation
-                            observer.unobserve(card);
-                        }
-                    });
-                }, { threshold: 0.2 });
-                
-                observer.observe(card);
-            }
+document.addEventListener('DOMContentLoaded', function() {
+    // Optional JavaScript for additional interactivity
+    const teamCards = document.querySelectorAll('.team-members .bg-white');
+    teamCards.forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            this.classList.add('shadow-xl');
         });
-
-        // Timeline animation on scroll
-        const timelineItems = document.querySelectorAll('.timeline-item');
-        timelineItems.forEach((item, index) => {
-            // Set initial state
-            item.style.opacity = '0';
-            item.style.transform = index % 2 === 0 ? 'translateX(-20px)' : 'translateX(20px)';
-            item.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-            
-            // Add intersection observer
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        setTimeout(() => {
-                            item.style.opacity = '1';
-                            item.style.transform = 'translateX(0)';
-                        }, 200 * index); // Staggered animation
-                        observer.unobserve(item);
-                    }
-                });
-            }, { threshold: 0.2 });
-            
-            observer.observe(item);
+        card.addEventListener('mouseleave', function() {
+            this.classList.remove('shadow-xl');
         });
-
-        // Team members hover effect
-        const teamMembers = document.querySelectorAll('.team-member');
-        teamMembers.forEach(member => {
-            member.addEventListener('mouseenter', function() {
-                this.querySelector('.bio').style.color = '#8c5e17';
-            });
-            
-            member.addEventListener('mouseleave', function() {
-                this.querySelector('.bio').style.color = '#666';
-            });
-        });
-
-        // Gallery items click for larger view
-        const galleryItems = document.querySelectorAll('.gallery-item');
-        galleryItems.forEach(item => {
-            item.addEventListener('click', function() {
-                const img = this.querySelector('img');
-                
-                // Create modal for larger view
-                const modal = document.createElement('div');
-                modal.style.position = 'fixed';
-                modal.style.top = '0';
-                modal.style.left = '0';
-                modal.style.width = '100%';
-                modal.style.height = '100%';
-                modal.style.backgroundColor = 'rgba(0,0,0,0.9)';
-                modal.style.display = 'flex';
-                modal.style.alignItems = 'center';
-                modal.style.justifyContent = 'center';
-                modal.style.zIndex = '9999';
-                modal.style.cursor = 'pointer';
-                
-                const enlargedImg = document.createElement('img');
-                enlargedImg.src = img.src;
-                enlargedImg.style.maxWidth = '90%';
-                enlargedImg.style.maxHeight = '90%';
-                enlargedImg.style.borderRadius = '5px';
-                
-                modal.appendChild(enlargedImg);
-                document.body.appendChild(modal);
-                
-                modal.addEventListener('click', function() {
-                    this.remove();
-                });
-            });
-        });
-        
-        // Check if elements are in viewport and add animation classes
-        function checkVisibility() {
-            const elementsToAnimate = document.querySelectorAll('.section-title, .award-card, .gallery-item');
-            
-            elementsToAnimate.forEach(element => {
-                const position = element.getBoundingClientRect();
-                
-                // If element is visible in viewport
-                if(position.top < window.innerHeight && position.bottom >= 0) {
-                    if (!element.classList.contains('animated')) {
-                        element.classList.add('animated');
-                        element.style.opacity = '1';
-                        element.style.transform = 'translateY(0)';
-                    }
-                }
-            });
-        }
-        
-        // Set initial state for elements to animate
-        const elementsToAnimate = document.querySelectorAll('.section-title, .award-card, .gallery-item');
-        elementsToAnimate.forEach(element => {
-            element.style.opacity = '0';
-            element.style.transform = 'translateY(20px)';
-            element.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-        });
-        
-        // Listen for scroll events
-        window.addEventListener('scroll', checkVisibility);
-        
-        // Check on initial load
-        checkVisibility();
     });
+});
 </script>
 {% endblock %}
