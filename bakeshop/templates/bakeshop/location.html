@@ -1,125 +1,7 @@
-{% extends 'bakeshop/base.html' %}
-{% load bakeshop_tags %}
-{% load static %}
-
-{% block title %}Locations - {{ site_settings.site_name }}{% endblock %}
-
-{% block extra_css %}
-
-{% endblock %}
-
-{% block content %}
-<!-- Hero Section -->
-<section class="location-hero" style="background-image: url('{% static 'images/location-bg.jpg' %}');">
-    <div class="location-hero-overlay"></div>
-    <div class="container">
-        <div class="location-hero-content">
-            <h1>Find a Location</h1>
-            <p>Visit one of our many bakeshop locations and experience the delicious taste of {{ site_settings.site_name }}</p>
-        </div>
-    </div>
-</section>
-
-<!-- Search Section -->
-<section class="search-section">
-    <div class="container">
-        <div class="search-container">
-            <form action="{% url 'bakeshop:location_search' %}" method="get" class="search-form">
-                <input type="text" name="query" placeholder="City, State, or Zip Code" class="search-input">
-                <select name="radius" class="search-select">
-                    <option value="5">5 km</option>
-                    <option value="10" selected>10 km</option>
-                    <option value="25">25 km</option>
-                    <option value="50">50 km</option>
-                </select>
-                <button type="submit" class="search-button">Find Stores</button>
-            </form>
-        </div>
-    </div>
-</section>
-
-<!-- Stats Section -->
-{% if stats %}
-<section class="stats-section">
-    <div class="container">
-        <div class="stats-container">
-            {% for stat in stats %}
-            <div class="stat-item">
-                <div class="stat-value">{{ stat.value }}</div>
-                <div class="stat-label">{{ stat.label }}</div>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-</section>
-{% endif %}
-
-<!-- Featured Location Section -->
-{% if featured_location %}
-<section class="location-section">
-    <div class="container">
-        <div class="section-title">
-            <h2>Featured Location</h2>
-            <p>Discover our flagship store with premium offerings and exceptional service</p>
-        </div>
-        
-        <div class="featured-location">
-            <div class="featured-location-content">
-                <div class="featured-image">
-                    <img src="{{ featured_location.image.url }}" alt="{{ featured_location.name }}">
+<path d="M12 2C8.14 2 5 5.14 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.14-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                    </svg>
+                    <p style="margin-top: 15px; color: #666;">Map location not available</p>
                 </div>
-                <div class="featured-details">
-                    <div class="featured-header">
-                        <h3>
-                            {{ featured_location.name }}
-                            {{ featured_location|location_status_badge|safe }}
-                        </h3>
-                        <div class="featured-type">{{ featured_location.get_location_type_display }}</div>
-                    </div>
-                    
-                    <div class="featured-description">
-                        {{ featured_location.description|safe|truncatewords_html:40 }}
-                    </div>
-                    
-                    <div class="featured-contact">
-                        <p><i class="fas fa-map-marker-alt"></i> {{ featured_location.address }}, {{ featured_location.city }}, {{ featured_location.state }} {{ featured_location.zip_code }}</p>
-                        <p><i class="fas fa-phone"></i> {{ featured_location.phone|phone_format }}</p>
-                        {% if featured_location.email %}
-                        <p><i class="fas fa-envelope"></i> {{ featured_location.email }}</p>
-                        {% endif %}
-                    </div>
-                    
-                    <div class="featured-hours">
-                        <h4>Hours of Operation</h4>
-                        {% if featured_location.is_24hours %}
-                        <p><strong>Open 24 Hours</strong></p>
-                        {% else %}
-                        <ul class="featured-hours-list">
-                            <li><span class="day">Monday:</span> <span>{{ featured_location.monday_hours|default:"Closed" }}</span></li>
-                            <li><span class="day">Tuesday:</span> <span>{{ featured_location.tuesday_hours|default:"Closed" }}</span></li>
-                            <li><span class="day">Wednesday:</span> <span>{{ featured_location.wednesday_hours|default:"Closed" }}</span></li>
-                            <li><span class="day">Thursday:</span> <span>{{ featured_location.thursday_hours|default:"Closed" }}</span></li>
-                            <li><span class="day">Friday:</span> <span>{{ featured_location.friday_hours|default:"Closed" }}</span></li>
-                            <li><span class="day">Saturday:</span> <span>{{ featured_location.saturday_hours|default:"Closed" }}</span></li>
-                            <li><span class="day">Sunday:</span> <span>{{ featured_location.sunday_hours|default:"Closed" }}</span></li>
-                        </ul>
-                        {% endif %}
-                    </div>
-                    
-                    <a href="{% url 'bakeshop:location_detail' featured_location.id %}" class="btn btn-primary">View Details</a>
-                </div>
-            </div>
-            
-            {% if featured_location.latitude and featured_location.longitude %}
-            <div class="featured-map">
-                <iframe 
-                    width="100%" 
-                    height="100%" 
-                    frameborder="0" 
-                    style="border:0" 
-                    src="https://www.google.com/maps/embed/v1/place?key=YOUR_API_KEY&q={{ featured_location.latitude }},{{ featured_location.longitude }}" 
-                    allowfullscreen>
-                </iframe>
             </div>
             {% endif %}
         </div>
@@ -136,7 +18,7 @@
         </div>
         
         <div class="filter-buttons">
-            <a href="{% url 'bakeshop:location' %}?filter=all" class="filter-button {% if current_filter == 'all' %}active{% endif %}">All Stores</a>
+            <a href="{% url 'bakeshop:location' %}?filter=all" class="filter-button {% if current_filter == 'all' or not current_filter %}active{% endif %}">All Stores</a>
             <a href="{% url 'bakeshop:location' %}?filter=store" class="filter-button {% if current_filter == 'store' %}active{% endif %}">Retail Stores</a>
             <a href="{% url 'bakeshop:location' %}?filter=express" class="filter-button {% if current_filter == 'express' %}active{% endif %}">Express Locations</a>
             <a href="{% url 'bakeshop:location' %}?filter=cafe" class="filter-button {% if current_filter == 'cafe' %}active{% endif %}">Café & Dining</a>
@@ -153,6 +35,14 @@
                 src="https://www.google.com/maps/embed/v1/search?key=YOUR_API_KEY&q=bakeries+in+tarlac+city" 
                 allowfullscreen>
             </iframe>
+            
+            <!-- Fallback if map doesn't load -->
+            <div class="default-image-svg" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
+                <svg width="100" height="100" viewBox="0 0 24 24" fill="#0a2463">
+                    <path d="M12 2C8.14 2 5 5.14 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.14-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                </svg>
+                <p style="margin-top: 15px; color: #666;">Interactive map could not be loaded</p>
+            </div>
         </div>
         
         <div class="row">
@@ -160,7 +50,19 @@
             <div class="col-md-6 col-lg-4">
                 <div class="store-card">
                     <div class="store-image">
-                        <img src="{{ location.image.url }}" alt="{{ location.name }}">
+                        {% if location.image %}
+                            <img src="{{ location.image.url }}" alt="{{ location.name }}">
+                        {% else %}
+                            <div class="default-image-svg">
+                                <svg width="100" height="100" viewBox="0 0 24 24" fill="#0a2463">
+                                    <path d="M12 2C8.14 2 5 5.14 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.14-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                                </svg>
+                            </div>
+                        {% endif %}
+                        
+                        {% if location.is_coming_soon %}
+                        <div class="coming-soon-tag">Coming Soon</div>
+                        {% endif %}
                     </div>
                     <div class="store-content">
                         <h3>
@@ -213,14 +115,21 @@
         </div>
         {% else %}
         <div class="text-center py-5">
-            <h3>No locations found</h3>
+            <div class="default-image-svg" style="height: 150px;">
+                <svg width="100" height="100" viewBox="0 0 24 24" fill="#0a2463">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+                </svg>
+            </div>
+            <h3 style="margin-top: 20px;">No locations found</h3>
             <p>Please try a different filter or search criteria.</p>
+            <a href="{% url 'bakeshop:location' %}" class="btn btn-primary mt-3">View All Locations</a>
         </div>
         {% endif %}
     </div>
 </section>
 
 <!-- Coming Soon Section -->
+{% if coming_soon_locations %}
 <section class="location-section" style="background-color: #f9f5f0;">
     <div class="container">
         <div class="section-title">
@@ -229,29 +138,60 @@
         </div>
         
         <div class="row">
-            {% for location in locations %}
-            {% if location.is_coming_soon %}
+            {% for location in coming_soon_locations %}
             <div class="col-md-6 col-lg-4">
                 <div class="store-card">
                     <div class="store-image">
-                        <img src="{{ location.image.url }}" alt="{{ location.name }}">
+                        {% if location.image %}
+                            <img src="{{ location.image.url }}" alt="{{ location.name }}">
+                        {% else %}
+                            <div class="default-image-svg">
+                                <svg width="100" height="100" viewBox="0 0 24 24" fill="#0a2463">
+                                    <path d="M12 2C8.14 2 5 5.14 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.14-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                                </svg>
+                            </div>
+                        {% endif %}
+                        <div class="coming-soon-tag">Coming Soon</div>
                     </div>
                     <div class="store-content">
                         <h3>
                             {{ location.name }}
-                            <span class="badge bg-info">Coming Soon</span>
+                            <span class="badge badge-info">Coming Soon</span>
                         </h3>
                         <div class="store-type">{{ location.get_location_type_display }}</div>
                         <div class="store-address">
                             <p><i class="fas fa-map-marker-alt"></i> {{ location.address }}</p>
                             <p>{{ location.city }}, {{ location.state }} {{ location.zip_code }}</p>
                         </div>
-                        <p class="mt-3">Stay tuned for the grand opening of our newest location!</p>
+                        <p class="mt-3">Stay tuned for the grand opening of our newest location! Sign up for our newsletter to be notified when we open.</p>
+                        
+                        <a href="{% url 'bakeshop:contact' %}" class="btn btn-primary w-100 mt-3">Get Opening Updates</a>
                     </div>
                 </div>
             </div>
-            {% endif %}
             {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Franchise CTA Section -->
+<section class="location-section" style="background-color: var(--primary-color); color: white;">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h2 style="color: white;">Interested in Opening Your Own {{ site_settings.site_name }} Location?</h2>
+                <p>Join our successful franchise family and bring the delicious taste of {{ site_settings.site_name }} to your community. We offer comprehensive support, training, and a proven business model.</p>
+                <ul style="margin-bottom: 20px; list-style-type: none; padding-left: 0;">
+                    <li style="margin-bottom: 10px;"><i class="fas fa-check-circle" style="color: var(--accent-color); margin-right: 10px;"></i> Proven business model with strong returns</li>
+                    <li style="margin-bottom: 10px;"><i class="fas fa-check-circle" style="color: var(--accent-color); margin-right: 10px;"></i> Comprehensive training and ongoing support</li>
+                    <li style="margin-bottom: 10px;"><i class="fas fa-check-circle" style="color: var(--accent-color); margin-right: 10px;"></i> Marketing assistance and brand recognition</li>
+                    <li><i class="fas fa-check-circle" style="color: var(--accent-color); margin-right: 10px;"></i> Multiple store formats to match your investment level</li>
+                </ul>
+            </div>
+            <div class="col-lg-4 text-center">
+                <a href="{% url 'bakeshop:franchise' %}" class="btn btn-secondary btn-lg" style="padding: 15px 30px; font-size: 18px;">Learn About Franchising</a>
+            </div>
         </div>
     </div>
 </section>
@@ -260,7 +200,99 @@
 {% block extra_js %}
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // You can add JavaScript for interactive maps here if needed
+        // Map error handling
+        const mapIframe = document.querySelector('.map-container iframe');
+        const mapFallback = document.querySelector('.map-container .default-image-svg');
+        
+        if (mapIframe) {
+            mapIframe.addEventListener('error', function() {
+                this.style.display = 'none';
+                mapFallback.style.display = 'flex';
+            });
+        }
+        
+        // Filter button active state
+        const filterButtons = document.querySelectorAll('.filter-button');
+        
+        filterButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+        
+        // Animate stats on scroll
+        const statValues = document.querySelectorAll('.stat-value');
+        let animated = false;
+        
+        function animateStats() {
+            if (animated) return;
+            
+            const statsSection = document.querySelector('.stats-section');
+            if (!statsSection) return;
+            
+            const position = statsSection.getBoundingClientRect();
+            
+            // If stats section is visible
+            if (position.top < window.innerHeight && position.bottom >= 0) {
+                statValues.forEach(value => {
+                    const targetValue = value.textContent;
+                    let currentValue = 0;
+                    const duration = 2000; // 2 seconds
+                    const startTime = Date.now();
+                    
+                    function updateValue() {
+                        const elapsedTime = Date.now() - startTime;
+                        const progress = Math.min(elapsedTime / duration, 1);
+                        
+                        if (targetValue.includes('%')) {
+                            // For percentage values
+                            const numValue = parseInt(targetValue);
+                            currentValue = Math.floor(numValue * progress);
+                            value.textContent = currentValue + '%';
+                        } else if (targetValue.includes('+')) {
+                            // For values with plus sign
+                            const numValue = parseInt(targetValue);
+                            currentValue = Math.floor(numValue * progress);
+                            value.textContent = currentValue + '+';
+                        } else if (!isNaN(parseInt(targetValue))) {
+                            // For numeric values
+                            const numValue = parseInt(targetValue);
+                            currentValue = Math.floor(numValue * progress);
+                            value.textContent = currentValue;
+                        }
+                        
+                        if (progress < 1) {
+                            requestAnimationFrame(updateValue);
+                        }
+                    }
+                    
+                    updateValue();
+                });
+                
+                animated = true;
+            }
+        }
+        
+        // Check on scroll
+        window.addEventListener('scroll', animateStats);
+        
+        // Check on load
+        animateStats();
+        
+        // Store hours highlight for current day
+        const today = new Date().getDay(); // 0 = Sunday, 1 = Monday, etc.
+        const hoursList = document.querySelectorAll('.featured-hours-list li');
+        
+        if (hoursList.length > 0) {
+            // Adjust for Sunday being 0
+            const dayIndex = today === 0 ? 6 : today - 1;
+            
+            if (hoursList[dayIndex]) {
+                hoursList[dayIndex].style.backgroundColor = 'rgba(10, 36, 99, 0.1)';
+                hoursList[dayIndex].style.fontWeight = '600';
+            }
+        }
     });
 </script>
 {% endblock %}
